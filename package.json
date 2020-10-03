@@ -1,0 +1,40 @@
+{
+  "name": "oauth-v2-client",
+  "version": "0.0.0",
+  "description": "Oauth V2 client based on axios",
+  "main": "dist/index.js",
+  "directories": {
+    "lib": "dist"
+  },
+  "scripts": {
+    "start": "tsc && node dist/test-server/run.js",
+    "test": "echo \"No test specified\"",
+    "build": "tsc",
+    "prepare": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noreajs/oauth-v2-client.git"
+  },
+  "keywords": [
+    "oauth",
+    "oauthv2",
+    "oauth2",
+    "oauth2-client",
+    "oauth-client"
+  ],
+  "author": "Arnold L.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/noreajs/oauth-v2-client/issues"
+  },
+  "homepage": "https://github.com/noreajs/oauth-v2-client#readme",
+  "dependencies": {
+    "axios": "^0.20.0"
+  },
+  "devDependencies": {
+    "@noreajs/core": "^1.1.1",
+    "@types/typescript": "^2.0.0",
+    "typescript": "^4.0.3"
+  }
+}
