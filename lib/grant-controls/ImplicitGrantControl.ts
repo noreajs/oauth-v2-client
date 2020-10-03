@@ -15,12 +15,19 @@ export default class ImplicitGrantControl extends GrantControl {
     this.state = this.options.state ?? Math.random().toString(36);
   }
 
-  getAuthUri() {
+  getAuthUri(callbackUrl?: string) {
     const url = new URL(this.options.authUrl);
     url.searchParams.set("response_type", "token");
-    url.searchParams.set("redirect_uri", this.options.callbackUrl);
+    url.searchParams.set(
+      "redirect_uri",
+      callbackUrl ?? this.options.callbackUrl
+    );
     url.searchParams.set("client_id", this.options.clientId);
     url.searchParams.set("state", this.state);
+    url.searchParams.set(
+      "scope",
+      this.options.scope ? this.options.scope.join(" ") : ""
+    );
     return url.toString();
   }
 

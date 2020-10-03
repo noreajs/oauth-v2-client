@@ -52,25 +52,99 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var common_1 = require("@noreajs/common");
+var axios_1 = __importDefault(require("axios"));
+var query_string_1 = require("query-string");
 var GrantControl_1 = __importDefault(require("./GrantControl"));
 var AuthorizationCodeGrantControl = /** @class */ (function (_super) {
     __extends(AuthorizationCodeGrantControl, _super);
-    function AuthorizationCodeGrantControl(options) {
+    function AuthorizationCodeGrantControl(requestOptions, options) {
+        var _a;
         var _this = _super.call(this) || this;
+        _this.requestOptions = requestOptions;
         _this.options = options;
+        // callback url
+        _this.defaultCallback = _this.options.callbackUrl;
+        // state generation
+        _this.state = (_a = _this.options.state) !== null && _a !== void 0 ? _a : Math.random().toString(36);
         return _this;
     }
-    AuthorizationCodeGrantControl.prototype.getAuthUri = function () {
-        return this.options.authUrl;
+    AuthorizationCodeGrantControl.prototype.getAuthUri = function (callbackUrl) {
+        // update callback url
+        this.defaultCallback = callbackUrl !== null && callbackUrl !== void 0 ? callbackUrl : this.defaultCallback;
+        // creating the request url
+        var url = new URL(this.options.authUrl);
+        url.searchParams.set("response_type", "code");
+        url.searchParams.set("redirect_uri", this.defaultCallback);
+        url.searchParams.set("client_id", this.options.clientId);
+        url.searchParams.set("state", this.state);
+        url.searchParams.set("scope", this.options.scope ? this.options.scope.join(" ") : "");
+        return url.toString();
     };
     /**
      * Get token with the authorization code extracted in the callback uri
      * @param callbackUri the full callback uri
      */
-    AuthorizationCodeGrantControl.prototype.getToken = function (callbackUri, requestOptions) {
+    AuthorizationCodeGrantControl.prototype.getToken = function (params) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, ""];
+            var urlData, requestHeaders, requestBody;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        urlData = query_string_1.parseUrl(params.callbackUri);
+                        if (urlData.query.state !== this.state) {
+                            throw new Error("Corrupted answer, the state doesn't match.");
+                        }
+                        else {
+                            // delete the state in the answer
+                            delete urlData.query.state;
+                        }
+                        if (!urlData.query.code) return [3 /*break*/, 2];
+                        requestHeaders = {};
+                        requestBody = {
+                            grant_type: "authorization_code",
+                            code: urlData.query.code,
+                            redirect_uri: this.defaultCallback,
+                            client_id: this.options.clientId,
+                        };
+                        /**
+                         * Client authentication
+                         * ----------------------
+                         */
+                        if (this.options.clientSecret) {
+                            if (this.options.basicAuthHeader === false) {
+                                requestBody["client_secret"] = this.options.clientSecret;
+                            }
+                            else {
+                                requestHeaders["Authorization"] = this.generateBasicAuthentication(this.options.clientId, this.options.clientSecret);
+                            }
+                        }
+                        /**
+                         * Getting the token
+                         * --------------------
+                         */
+                        return [4 /*yield*/, axios_1.default.post(this.options.accessTokenUrl, common_1.Obj.merge(requestBody, (_a = this.requestOptions.body) !== null && _a !== void 0 ? _a : {}), {
+                                headers: common_1.Obj.merge(requestHeaders, (_b = this.requestOptions.headers) !== null && _b !== void 0 ? _b : {}),
+                            })
+                                .then(function (response) {
+                                if (params.onSuccess)
+                                    params.onSuccess(response.data);
+                            })
+                                .catch(function (error) {
+                                if (params.onError)
+                                    params.onError(error);
+                            })];
+                    case 1:
+                        /**
+                         * Getting the token
+                         * --------------------
+                         */
+                        _c.sent();
+                        return [3 /*break*/, 3];
+                    case 2: return [2 /*return*/, new Error("The code is missing in the answer.")];
+                    case 3: return [2 /*return*/];
+                }
             });
         });
     };

@@ -28,12 +28,13 @@ var ImplicitGrantControl = /** @class */ (function (_super) {
         _this.state = (_a = _this.options.state) !== null && _a !== void 0 ? _a : Math.random().toString(36);
         return _this;
     }
-    ImplicitGrantControl.prototype.getAuthUri = function () {
+    ImplicitGrantControl.prototype.getAuthUri = function (callbackUrl) {
         var url = new URL(this.options.authUrl);
         url.searchParams.set("response_type", "token");
-        url.searchParams.set("redirect_uri", this.options.callbackUrl);
+        url.searchParams.set("redirect_uri", callbackUrl !== null && callbackUrl !== void 0 ? callbackUrl : this.options.callbackUrl);
         url.searchParams.set("client_id", this.options.clientId);
         url.searchParams.set("state", this.state);
+        url.searchParams.set("scope", this.options.scope ? this.options.scope.join(" ") : "");
         return url.toString();
     };
     /**

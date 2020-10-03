@@ -10,7 +10,7 @@ var PasswordGrantControl_1 = __importDefault(require("./grant-controls/PasswordG
 var AuthorizationCodePKCEGrantControl_1 = __importDefault(require("./grant-controls/AuthorizationCodePKCEGrantControl"));
 var OauthClient = /** @class */ (function () {
     function OauthClient(config) {
-        var _a;
+        var _a, _b;
         this.config = config;
         // init controls
         /**
@@ -27,7 +27,7 @@ var OauthClient = /** @class */ (function () {
         /**
          * Authorization code
          */
-        this.authorizationCode = new AuthorizationCodeGrantControl_1.default({
+        this.authorizationCode = new AuthorizationCodeGrantControl_1.default((_a = this.config.requestOptions) !== null && _a !== void 0 ? _a : {}, {
             accessTokenUrl: "" + this.config.oauthOptions.accessTokenUrl,
             authUrl: this.config.oauthOptions.authUrl,
             callbackUrl: "" + this.config.oauthOptions.callbackUrl,
@@ -45,7 +45,7 @@ var OauthClient = /** @class */ (function () {
             authUrl: this.config.oauthOptions.authUrl,
             callbackUrl: "" + this.config.oauthOptions.callbackUrl,
             clientId: this.config.oauthOptions.clientId,
-            codeChallengeMethod: (_a = this.config.oauthOptions.codeChallengeMethod) !== null && _a !== void 0 ? _a : "S256",
+            codeChallengeMethod: (_b = this.config.oauthOptions.codeChallengeMethod) !== null && _b !== void 0 ? _b : "S256",
             basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
             clientSecret: this.config.oauthOptions.clientSecret,
             codeVerifier: this.config.oauthOptions.codeVerifier,

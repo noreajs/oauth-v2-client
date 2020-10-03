@@ -35,16 +35,19 @@ export default class OauthClient {
     /**
      * Authorization code
      */
-    this.authorizationCode = new AuthorizationCodeGrantControl({
-      accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
-      authUrl: this.config.oauthOptions.authUrl,
-      callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
-      clientId: this.config.oauthOptions.clientId,
-      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-      clientSecret: this.config.oauthOptions.clientSecret,
-      scope: this.config.oauthOptions.scope,
-      state: this.config.oauthOptions.state,
-    });
+    this.authorizationCode = new AuthorizationCodeGrantControl(
+      this.config.requestOptions ?? {},
+      {
+        accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
+        authUrl: this.config.oauthOptions.authUrl,
+        callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
+        clientId: this.config.oauthOptions.clientId,
+        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+        clientSecret: this.config.oauthOptions.clientSecret,
+        scope: this.config.oauthOptions.scope,
+        state: this.config.oauthOptions.state,
+      }
+    );
 
     /**
      * Authorization code with PKCE
