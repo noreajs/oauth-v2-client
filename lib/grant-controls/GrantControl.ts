@@ -8,8 +8,16 @@ export default class GrantControl {
    * @param username username
    * @param password password
    */
-  generateBasicAuthentication(username: string, password: string) {
+  protected generateBasicAuthentication(username: string, password: string) {
     return `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
+  }
+
+  /**
+   * Generate code challenge from code verifier
+   * @param codeVerifier code verifier
+   */
+  protected generateCodeChallenge(codeVerifier: string) {
+    // code here
   }
 
   async refresh() {}

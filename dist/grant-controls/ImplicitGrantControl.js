@@ -24,14 +24,19 @@ var ImplicitGrantControl = /** @class */ (function (_super) {
         var _a;
         var _this = _super.call(this) || this;
         _this.options = options;
+        // callback url
+        _this.defaultCallback = _this.options.callbackUrl;
         // state generation
         _this.state = (_a = _this.options.state) !== null && _a !== void 0 ? _a : Math.random().toString(36);
         return _this;
     }
     ImplicitGrantControl.prototype.getAuthUri = function (callbackUrl) {
+        // update callback url
+        this.defaultCallback = callbackUrl !== null && callbackUrl !== void 0 ? callbackUrl : this.defaultCallback;
+        // constructing the request
         var url = new URL(this.options.authUrl);
         url.searchParams.set("response_type", "token");
-        url.searchParams.set("redirect_uri", callbackUrl !== null && callbackUrl !== void 0 ? callbackUrl : this.options.callbackUrl);
+        url.searchParams.set("redirect_uri", this.defaultCallback);
         url.searchParams.set("client_id", this.options.clientId);
         url.searchParams.set("state", this.state);
         url.searchParams.set("scope", this.options.scope ? this.options.scope.join(" ") : "");

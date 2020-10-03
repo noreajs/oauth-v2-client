@@ -47,6 +47,13 @@ var GrantControl = /** @class */ (function () {
     GrantControl.prototype.generateBasicAuthentication = function (username, password) {
         return "Basic " + Buffer.from(username + ":" + password).toString("base64");
     };
+    /**
+     * Generate code challenge from code verifier
+     * @param codeVerifier code verifier
+     */
+    GrantControl.prototype.generateCodeChallenge = function (codeVerifier) {
+        // code here
+    };
     GrantControl.prototype.refresh = function () {
         return __awaiter(this, void 0, void 0, function () { return __generator(this, function (_a) {
             return [2 /*return*/];
