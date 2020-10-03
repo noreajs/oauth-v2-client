@@ -1,4 +1,17 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,80 +52,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var http_1 = __importDefault(require("http"));
-var OauthClient_1 = __importDefault(require("../OauthClient"));
-var app = express_1.default();
-var httpServer = http_1.default.createServer(app);
-var noreaApi = new OauthClient_1.default({
-    oauthOptions: {
-        clientId: "2054f3ef-7360-4779-b01c-5bb8ee09f61b",
-        clientSecret: "9c40df4a551e2d92e45026ef5189f4116ffde949963a826c94d6b7f5f12a9a99f90d3a3cdbdd2dd840ea0c0b665cd8babca4cbac214fd09915f18ac824b41258",
-        callbackUrl: "http://127.0.0.1:3500/implicit/callback",
-        accessTokenUrl: "http://localhost:3000/oauth/v2/token",
-        authUrl: "http://localhost:3000/oauth/v2/authorize"
+var GrantControl_1 = __importDefault(require("./GrantControl"));
+var AuthorizationCodeGrantControl = /** @class */ (function (_super) {
+    __extends(AuthorizationCodeGrantControl, _super);
+    function AuthorizationCodeGrantControl(options) {
+        var _this = _super.call(this) || this;
+        _this.options = options;
+        return _this;
     }
-});
-/**
- * Implicit
- * --------------
- */
-app.get('/oauth/implicit', function (req, res) {
-    res.redirect(noreaApi.implicit.getAuthUri());
-});
-app.get("/implicit/callback", function (req, res) {
-    res.json(noreaApi.implicit.getToken(req.originalUrl));
-});
-/**
- * Authorization code
- * -----------------------
- */
-app.get('/oauth/auth-code', function (req, res) {
-    res.redirect(noreaApi.authorizationCode.getAuthUri());
-});
-app.get("/auth-code/callback", function (req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a, _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _b = (_a = res).json;
-                    return [4 /*yield*/, noreaApi.authorizationCode.getToken(req.originalUrl)];
-                case 1:
-                    _b.apply(_a, [_c.sent()]);
-                    return [2 /*return*/];
-            }
+    AuthorizationCodeGrantControl.prototype.getAuthUri = function () {
+        return this.options.authUrl;
+    };
+    /**
+     * Get token with the authorization code extracted in the callback uri
+     * @param callbackUri the full callback uri
+     */
+    AuthorizationCodeGrantControl.prototype.getToken = function (callbackUri, requestOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, ""];
+            });
         });
-    });
-});
-/**
- * Authorization code PKCE
- * ----------------------------
- */
-app.get('/oauth/auth-code-pkce', function (req, res) {
-    res.redirect(noreaApi.authorizationCodePKCE.getAuthUri());
-});
-app.get("/auth-code-pkce/callback", function (req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a, _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    _b = (_a = res).json;
-                    return [4 /*yield*/, noreaApi.authorizationCodePKCE.getToken(req.originalUrl)];
-                case 1:
-                    _b.apply(_a, [_c.sent()]);
-                    return [2 /*return*/];
-            }
-        });
-    });
-});
-/**
- * Home
- */
-app.get("/", function (req, res) {
-    res.json({
-        message: 'Hey we there'
-    });
-});
-httpServer.listen(3500);
+    };
+    return AuthorizationCodeGrantControl;
+}(GrantControl_1.default));
+exports.default = AuthorizationCodeGrantControl;
