@@ -19,6 +19,10 @@ export default class ImplicitGrantControl extends GrantControl {
     this.state = this.options.state ?? Math.random().toString(36);
   }
 
+  /**
+   * Get authentication url
+   * @param callbackUrl redirect uri
+   */
   getAuthUri(callbackUrl?: string) {
     // update callback url
     this.defaultCallback = callbackUrl ?? this.defaultCallback;

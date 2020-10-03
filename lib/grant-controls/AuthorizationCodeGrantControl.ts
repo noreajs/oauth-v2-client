@@ -2,6 +2,7 @@ import { Obj } from "@noreajs/common";
 import Axios, { AxiosError } from "axios";
 import { parseUrl } from "query-string";
 import AuthorizationCodeGrantOptions from "../interfaces/AuthorizationCodeGrantOptions";
+import GetAuthorizationTokenFuncType from "../interfaces/GetAuthorizationTokenFuncType";
 import RequestOptions from "../interfaces/RequestOptions";
 import GrantControl from "./GrantControl";
 
@@ -27,6 +28,10 @@ export default class AuthorizationCodeGrantControl extends GrantControl {
     this.state = this.options.state ?? Math.random().toString(36);
   }
 
+  /**
+   * Get authentication url
+   * @param callbackUrl redirect uri
+   */
   getAuthUri(callbackUrl?: string) {
     // update callback url
     this.defaultCallback = callbackUrl ?? this.defaultCallback;
@@ -47,14 +52,9 @@ export default class AuthorizationCodeGrantControl extends GrantControl {
 
   /**
    * Get token with the authorization code extracted in the callback uri
-   * @param callbackUri the full callback uri
+   * @param params {GetAuthorizationTokenFuncType} parameters
    */
-  async getToken<T = any>(params: {
-    callbackUri: string;
-    requestOptions?: RequestOptions;
-    onSuccess?: (data: T) => void;
-    onError?: (error: AxiosError<any>) => void;
-  }) {
+  async getToken<T = any>(params: GetAuthorizationTokenFuncType<T>) {
     // callback url data
     const urlData = parseUrl(params.callbackUri);
 
