@@ -1,6 +1,13 @@
 import { Obj } from "@noreajs/common";
 import Axios from "axios";
 import { parseUrl } from "query-string";
+import { refreshToken } from "../helpers";
+import generateBasicAuthentication from "../helpers/basicAuthFunc";
+import injectQueryParams from "../helpers/injectQueryParamsFunc";
+import {
+  generateCodeChallenge,
+  generateCodeVerifier,
+} from "../helpers/pkceFactory";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodePKCEGrantOptions from "../interfaces/AuthorizationCodePKCEGrantOptions";
 import GetAuthorizationTokenFuncType from "../interfaces/GetAuthorizationTokenFuncType";
@@ -9,7 +16,9 @@ import RefreshTokenFuncType from "../interfaces/RefreshTokenFuncType";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
 import GrantControl from "./GrantControl";
 
-export default class AuthorizationCodePKCEGrantControl extends GrantControl implements TokenRefreshable {
+export default class AuthorizationCodePKCEGrantControl
+  extends GrantControl
+  implements TokenRefreshable {
   private options: AuthorizationCodePKCEGrantOptions;
   private state: string;
   private redirectUri: string;
@@ -31,11 +40,10 @@ export default class AuthorizationCodePKCEGrantControl extends GrantControl impl
     this.state = this.options.state ?? Math.random().toString(36);
 
     // code verifier
-    this.codeVerifier =
-      this.options.codeVerifier ?? this.generateCodeVerifier();
+    this.codeVerifier = this.options.codeVerifier ?? generateCodeVerifier();
 
     // code challenge
-    this.codeChallenge = this.generateCodeChallenge(this.codeVerifier);
+    this.codeChallenge = generateCodeChallenge(this.codeVerifier);
   }
 
   /**
@@ -112,7 +120,7 @@ export default class AuthorizationCodePKCEGrantControl extends GrantControl impl
         requestBody["client_id"] = this.options.clientId;
         requestBody["client_secret"] = this.options.clientSecret;
       } else {
-        requestHeaders["Authorization"] = this.generateBasicAuthentication(
+        requestHeaders["Authorization"] = generateBasicAuthentication(
           this.options.clientId,
           this.options.clientSecret ?? ""
         );
@@ -123,7 +131,7 @@ export default class AuthorizationCodePKCEGrantControl extends GrantControl impl
        * --------------------
        */
       await Axios.post(
-        this.injectQueryParams(
+        injectQueryParams(
           this.options.accessTokenUrl,
           Obj.merge(
             params.requestOptions?.query ?? {},
@@ -156,66 +164,18 @@ export default class AuthorizationCodePKCEGrantControl extends GrantControl impl
    * @param params parameters
    */
   async refresh<T = any>(params: RefreshTokenFuncType<T>) {
-    /**
-     * Only if refresh_token is available
-     */
-    if (this.token?.refresh_token) {
-      // headers
-      const requestHeaders: any = {};
-
-      // body
-      const requestBody: any = {
-        grant_type: "refresh_token",
-        refresh_token: this.token?.refresh_token,
-        scope: this.oauthOptions.scope ? this.oauthOptions.scope.join(" ") : "",
-      };
-
-      /**
-       * Client authentication
-       * ----------------------
-       */
-      if (this.oauthOptions.basicAuthHeader === false) {
-        requestBody["client_id"] = this.oauthOptions.clientId;
-        requestBody["client_secret"] = this.oauthOptions.clientSecret;
-      } else {
-        requestHeaders["Authorization"] = this.generateBasicAuthentication(
-          this.oauthOptions.clientId,
-          this.oauthOptions.clientSecret ?? ""
-        );
-      }
-
-      /**
-       * Getting the token
-       * --------------------
-       */
-      await Axios.post(
-        this.injectQueryParams(
-          this.options.accessTokenUrl,
-          Obj.merge(
-            params.requestOptions?.query ?? {},
-            this.requestOptions?.query ?? {}
-          )
-        ),
-        Obj.merge(requestBody, this.requestOptions?.body ?? {}),
-        {
-          headers: Obj.merge(
-            requestHeaders,
-            this.requestOptions?.headers ?? {}
-          ),
-        }
-      )
-        .then((response) => {
-          // update the token
-          this.setToken(response.data);
-
-          // call callback
-          if (params.onSuccess) params.onSuccess(response.data);
-        })
-        .catch((error) => {
-          if (params.onError) params.onError(error);
-        });
-    } else {
-      console.error("Refresh token is required");
-    }
+    refreshToken<T>({
+      accessTokenUrl: this.options.accessTokenUrl,
+      config: {
+        oauthOptions: this.oauthOptions,
+        requestOptions: this.requestOptions,
+      },
+      onSuccess: (data) => {
+        // update the token
+        this.setToken(data);
+      },
+      params: params,
+      token: this.token,
+    });
   }
 }
