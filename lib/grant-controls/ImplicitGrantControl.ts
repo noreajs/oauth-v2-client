@@ -78,6 +78,10 @@ export default class ImplicitGrantControl extends GrantControl {
       // delete the state in the answer
       delete urlData.query.state;
     }
+
+    // set the token
+    this.setToken(urlData.query);
+
     return urlData.query as any;
   }
 }

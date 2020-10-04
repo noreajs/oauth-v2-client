@@ -77,7 +77,7 @@ export default class OauthClient {
     /**
      * Password grant
      */
-    this.password = new PasswordGrantControl({
+    this.password = new PasswordGrantControl(this.config.requestOptions ?? {}, {
       accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
       username: `${this.config.oauthOptions.username}`,
       password: `${this.config.oauthOptions.password}`,

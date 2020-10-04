@@ -101,7 +101,6 @@ export default class AuthorizationCodePKCEGrantControl extends GrantControl {
         grant_type: "authorization_code",
         code: urlData.query.code,
         redirect_uri: this.redirectUri,
-        client_id: this.options.clientId,
         code_verifier: this.codeVerifier,
       };
 
@@ -109,15 +108,14 @@ export default class AuthorizationCodePKCEGrantControl extends GrantControl {
        * Client authentication
        * ----------------------
        */
-      if (this.options.clientSecret) {
-        if (this.options.basicAuthHeader === false) {
-          requestBody["client_secret"] = this.options.clientSecret;
-        } else {
-          requestHeaders["Authorization"] = this.generateBasicAuthentication(
-            this.options.clientId,
-            this.options.clientSecret
-          );
-        }
+      if (this.options.basicAuthHeader === false) {
+        requestBody["client_id"] = this.options.clientId;
+        requestBody["client_secret"] = this.options.clientSecret;
+      } else {
+        requestHeaders["Authorization"] = this.generateBasicAuthentication(
+          this.options.clientId,
+          this.options.clientSecret ?? ""
+        );
       }
 
       /**
@@ -125,13 +123,23 @@ export default class AuthorizationCodePKCEGrantControl extends GrantControl {
        * --------------------
        */
       await Axios.post(
-        this.options.accessTokenUrl,
+        this.injectQueryParams(
+          this.options.accessTokenUrl,
+          Obj.merge(
+            params.requestOptions?.query ?? {},
+            this.requestOptions.query ?? {}
+          )
+        ),
         Obj.merge(requestBody, this.requestOptions.body ?? {}),
         {
           headers: Obj.merge(requestHeaders, this.requestOptions.headers ?? {}),
         }
       )
         .then((response) => {
+          // update the token
+          this.setToken(response.data);
+
+          // call callback
           if (params.onSuccess) params.onSuccess(response.data);
         })
         .catch((error) => {

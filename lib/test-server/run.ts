@@ -1,3 +1,4 @@
+import { json } from "body-parser";
 import express from "express";
 import http from "http";
 import OauthClient from "../OauthClient";
@@ -88,31 +89,43 @@ app.get("/auth-code-pkce/callback", async function (req, res) {
  * Password
  * -----------------------------------
  */
-app.post("/oauth/password", async function (req, res) {
-  // await noreaApi.password.getToken({
-  //   onSuccess: (data) => {
-  //     return res.status(200).json(data);
-  //   },
-  //   onError: (error) => {
-  //     return res.status(500).json(error.response?.data);
-  //   },
-  // });
-});
+app.post("/oauth/password", [
+  json(),
+  async function (req:any, res:any) {
+    try {
+      await noreaApi.password.getToken({
+        username: req.body.username,
+        password: req.body.password,
+        onSuccess: (data) => {
+          return res.status(200).json(noreaApi.password.token);
+        },
+        onError: (error) => {
+          return res.status(500).json(error.response?.data);
+        },
+      });
+    } catch (error) {
+      return res.status(500).json(error.message);
+    }
+  },
+]);
 
 /**
  * Client credentials
  * -----------------------------------
  */
-app.post("/oauth/client", async function (req, res) {
-  // await noreaApi.client.getToken({
-  //   onSuccess: (data) => {
-  //     return res.status(200).json(data);
-  //   },
-  //   onError: (error) => {
-  //     return res.status(500).json(error.response?.data);
-  //   },
-  // });
-});
+app.post("/oauth/client", [
+  json(),
+  async function (req:any, res:any) {
+    // await noreaApi.client.getToken({
+    //   onSuccess: (data) => {
+    //     return res.status(200).json(data);
+    //   },
+    //   onError: (error) => {
+    //     return res.status(500).json(error.response?.data);
+    //   },
+    // });
+  }
+]);
 
 /**
  * Home

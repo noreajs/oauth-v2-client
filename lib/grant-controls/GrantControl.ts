@@ -1,6 +1,6 @@
 import TokenResponse from "../interfaces/TokenResponse";
 import { toASCII } from "punycode";
-import { SHA256,SHA1, enc } from "crypto-js";
+import { SHA256, SHA1, enc } from "crypto-js";
 
 export default class GrantControl {
   token?: TokenResponse;
@@ -14,8 +14,11 @@ export default class GrantControl {
     return `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
   }
 
+  /**
+   * Generate code verifier for PKCE implementation
+   */
   protected generateCodeVerifier() {
-    return enc.Hex.stringify(SHA1(Math.random().toString(36)))
+    return enc.Hex.stringify(SHA1(Math.random().toString(36)));
   }
 
   /**
@@ -27,6 +30,34 @@ export default class GrantControl {
       .replace(/=/g, "")
       .replace(/\+/g, "-")
       .replace(/\//g, "_");
+  }
+
+  /**
+   * Add url's query params
+   * @param url URL
+   * @param params inject query params in the given URL
+   */
+  protected injectQueryParams(url: string, params: any) {
+    // constructing the request
+    const urlObj = new URL(url);
+
+    for (const key in params ?? {}) {
+      if (Object.prototype.hasOwnProperty.call(params, key)) {
+        const value = params[key];
+        // setting the param
+        urlObj.searchParams.set(key, value);
+      }
+    }
+
+    return urlObj.toString();
+  }
+
+  /**
+   * Setting the token data
+   * @param data token data
+   */
+  protected setToken(data: any) {
+    this.token = data;
   }
 
   async refresh() {}
