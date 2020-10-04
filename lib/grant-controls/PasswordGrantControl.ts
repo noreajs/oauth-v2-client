@@ -16,6 +16,10 @@ export default class PasswordGrantControl extends GrantControl {
     this.requestOptions = requestOptions;
   }
 
+  /**
+   * Get Password Grant Token
+   * @param params parameters
+   */
   async getToken<T = any>(params: PasswordGrantFuncType<T>) {
     // headers
     const requestHeaders: any = {};

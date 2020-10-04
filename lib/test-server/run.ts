@@ -116,14 +116,14 @@ app.post("/oauth/password", [
 app.post("/oauth/client", [
   json(),
   async function (req:any, res:any) {
-    // await noreaApi.client.getToken({
-    //   onSuccess: (data) => {
-    //     return res.status(200).json(data);
-    //   },
-    //   onError: (error) => {
-    //     return res.status(500).json(error.response?.data);
-    //   },
-    // });
+    await noreaApi.client.getToken({
+      onSuccess: (data) => {
+        return res.status(200).json(data);
+      },
+      onError: (error) => {
+        return res.status(500).json(error.response?.data);
+      },
+    });
   }
 ]);
 

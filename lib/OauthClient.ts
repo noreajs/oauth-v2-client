@@ -90,12 +90,15 @@ export default class OauthClient {
     /**
      * Client credentials
      */
-    this.client = new ClientCredentialsGrantControl({
-      accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
-      clientId: this.config.oauthOptions.clientId,
-      clientSecret: this.config.oauthOptions.clientSecret,
-      scope: this.config.oauthOptions.scope,
-      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-    });
+    this.client = new ClientCredentialsGrantControl(
+      this.config.requestOptions ?? {},
+      {
+        accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
+        clientId: this.config.oauthOptions.clientId,
+        clientSecret: this.config.oauthOptions.clientSecret,
+        scope: this.config.oauthOptions.scope,
+        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+      }
+    );
   }
 }
