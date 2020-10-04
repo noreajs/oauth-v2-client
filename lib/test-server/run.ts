@@ -16,12 +16,12 @@ const noreaApi = new OauthClient({
   },
   requestOptions: {
     body: {
-      baby: "boom"
+      baby: "boom",
     },
     headers: {
-      "Accept": "application/json"
-    }
-  }
+      Accept: "application/json",
+    },
+  },
 });
 
 /**
@@ -42,15 +42,15 @@ app.get("/implicit/callback", function (req, res) {
  */
 app.get("/oauth/auth-code", function (req, res) {
   res.redirect(
-    noreaApi.authorizationCode.getAuthUri(
-      "http://127.0.0.1:3500/auth-code/callback"
-    )
+    noreaApi.authorizationCode.getAuthUri({
+      callbackUrl: "http://127.0.0.1:3500/auth-code/callback",
+    })
   );
 });
 
 app.get("/auth-code/callback", async function (req, res) {
   await noreaApi.authorizationCode.getToken({
-    callbackUri: req.originalUrl,
+    callbackUrl: req.originalUrl,
     onSuccess: (data) => {
       return res.status(200).json(data);
     },
@@ -65,12 +65,53 @@ app.get("/auth-code/callback", async function (req, res) {
  * ----------------------------
  */
 app.get("/oauth/auth-code-pkce", function (req, res) {
-  // "http://127.0.0.1:3500/auth-code-pkce/callback"
-  res.redirect(noreaApi.authorizationCodePKCE.getAuthUri());
+  res.redirect(
+    noreaApi.authorizationCodePKCE.getAuthUri({
+      callbackUrl: "http://127.0.0.1:3500/auth-code-pkce/callback",
+    })
+  );
 });
 
 app.get("/auth-code-pkce/callback", async function (req, res) {
-  res.json(await noreaApi.authorizationCodePKCE.getToken(req.originalUrl));
+  await noreaApi.authorizationCodePKCE.getToken({
+    callbackUrl: req.originalUrl,
+    onSuccess: (data) => {
+      return res.status(200).json(data);
+    },
+    onError: (error) => {
+      return res.status(500).json(error.response?.data);
+    },
+  });
+});
+
+/**
+ * Password
+ * -----------------------------------
+ */
+app.post("/oauth/password", async function (req, res) {
+  // await noreaApi.password.getToken({
+  //   onSuccess: (data) => {
+  //     return res.status(200).json(data);
+  //   },
+  //   onError: (error) => {
+  //     return res.status(500).json(error.response?.data);
+  //   },
+  // });
+});
+
+/**
+ * Client credentials
+ * -----------------------------------
+ */
+app.post("/oauth/client", async function (req, res) {
+  // await noreaApi.client.getToken({
+  //   onSuccess: (data) => {
+  //     return res.status(200).json(data);
+  //   },
+  //   onError: (error) => {
+  //     return res.status(500).json(error.response?.data);
+  //   },
+  // });
 });
 
 /**

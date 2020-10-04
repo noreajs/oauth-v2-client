@@ -1,19 +1,27 @@
 import ImplicitGrantOptions from "../interfaces/ImplicitGrantOptions";
 import GrantControl from "./GrantControl";
 import { parseUrl } from "query-string";
+import { Obj } from "@noreajs/common";
+import RequestOptions from "../interfaces/RequestOptions";
+import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncType";
 
 export default class ImplicitGrantControl extends GrantControl {
   private options: ImplicitGrantOptions;
+  private requestOptions: Omit<RequestOptions, "headers" | "body">;
   private state: string;
-  private defaultCallback: string;
+  private redirectUri: string;
 
-  constructor(options: ImplicitGrantOptions) {
+  constructor(
+    requestOptions: Omit<RequestOptions, "headers" | "body">,
+    options: ImplicitGrantOptions
+  ) {
     super();
 
     this.options = options;
+    this.requestOptions = requestOptions;
 
     // callback url
-    this.defaultCallback = this.options.callbackUrl;
+    this.redirectUri = this.options.callbackUrl;
 
     // state generation
     this.state = this.options.state ?? Math.random().toString(36);
@@ -21,33 +29,48 @@ export default class ImplicitGrantControl extends GrantControl {
 
   /**
    * Get authentication url
-   * @param callbackUrl redirect uri
+   * @param {GetAuthorizationUriFuncType} options redirect uri, response type
    */
-  getAuthUri(callbackUrl?: string) {
+  getAuthUri(options?: GetAuthorizationUriFuncType) {
     // update callback url
-    this.defaultCallback = callbackUrl ?? this.defaultCallback;
+    this.redirectUri = options?.callbackUrl ?? this.redirectUri;
+
+    // query params
+    const queryParams: any = {
+      response_type: "token",
+      redirect_uri: this.redirectUri,
+      client_id: this.options.clientId,
+      state: this.state,
+      scope: this.options.scope ? this.options.scope.join(" ") : "",
+    };
+
+    // merged params
+    const mergedParams = Obj.merge(
+      queryParams,
+      this.requestOptions.query ?? {}
+    );
 
     // constructing the request
     const url = new URL(this.options.authUrl);
-    url.searchParams.set("response_type", "token");
-    url.searchParams.set("redirect_uri", this.defaultCallback);
-    url.searchParams.set("client_id", this.options.clientId);
-    url.searchParams.set("state", this.state);
-    url.searchParams.set(
-      "scope",
-      this.options.scope ? this.options.scope.join(" ") : ""
-    );
+
+    for (const param in mergedParams) {
+      if (Object.prototype.hasOwnProperty.call(mergedParams, param)) {
+        const value = mergedParams[param];
+        // setting the param
+        url.searchParams.set(param, value);
+      }
+    }
 
     return url.toString();
   }
 
   /**
    * Extract the token within the callback uri
-   * @param callbackUri the full callback uri
+   * @param callbackUrl the full callback uri
    */
-  getToken<T = any>(callbackUri: string): T {
+  getToken<T = any>(callbackUrl: string): T {
     // callback url data
-    const urlData = parseUrl(callbackUri);
+    const urlData = parseUrl(callbackUrl);
 
     if (urlData.query.state !== this.state) {
       throw new Error("Corrupted answer, the state doesn't match.");

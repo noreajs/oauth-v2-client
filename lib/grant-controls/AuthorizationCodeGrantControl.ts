@@ -1,8 +1,9 @@
 import { Obj } from "@noreajs/common";
-import Axios, { AxiosError } from "axios";
+import Axios from "axios";
 import { parseUrl } from "query-string";
 import AuthorizationCodeGrantOptions from "../interfaces/AuthorizationCodeGrantOptions";
 import GetAuthorizationTokenFuncType from "../interfaces/GetAuthorizationTokenFuncType";
+import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncType";
 import RequestOptions from "../interfaces/RequestOptions";
 import GrantControl from "./GrantControl";
 
@@ -10,7 +11,7 @@ export default class AuthorizationCodeGrantControl extends GrantControl {
   private options: AuthorizationCodeGrantOptions;
   private requestOptions: RequestOptions;
   private state: string;
-  private defaultCallback: string;
+  private redirectUri: string;
 
   constructor(
     requestOptions: RequestOptions,
@@ -22,7 +23,7 @@ export default class AuthorizationCodeGrantControl extends GrantControl {
     this.options = options;
 
     // callback url
-    this.defaultCallback = this.options.callbackUrl;
+    this.redirectUri = this.options.callbackUrl;
 
     // state generation
     this.state = this.options.state ?? Math.random().toString(36);
@@ -30,22 +31,37 @@ export default class AuthorizationCodeGrantControl extends GrantControl {
 
   /**
    * Get authentication url
-   * @param callbackUrl redirect uri
+   * @param {GetAuthorizationUriFuncType} options redirect uri, response type
    */
-  getAuthUri(callbackUrl?: string) {
+  getAuthUri(options?: GetAuthorizationUriFuncType) {
     // update callback url
-    this.defaultCallback = callbackUrl ?? this.defaultCallback;
+    this.redirectUri = options?.callbackUrl ?? this.redirectUri;
 
-    // creating the request url
-    const url = new URL(this.options.authUrl);
-    url.searchParams.set("response_type", "code");
-    url.searchParams.set("redirect_uri", this.defaultCallback);
-    url.searchParams.set("client_id", this.options.clientId);
-    url.searchParams.set("state", this.state);
-    url.searchParams.set(
-      "scope",
-      this.options.scope ? this.options.scope.join(" ") : ""
+    // query params
+    const queryParams: any = {
+      response_type: options?.responseType ?? "code",
+      redirect_uri: this.redirectUri,
+      client_id: this.options.clientId,
+      state: this.state,
+      scope: this.options.scope ? this.options.scope.join(" ") : "",
+    };
+
+    // merged params
+    const mergedParams = Obj.merge(
+      queryParams,
+      this.requestOptions.query ?? {}
     );
+
+    // constructing the request
+    const url = new URL(this.options.authUrl);
+
+    for (const param in mergedParams) {
+      if (Object.prototype.hasOwnProperty.call(mergedParams, param)) {
+        const value = mergedParams[param];
+        // setting the param
+        url.searchParams.set(param, value);
+      }
+    }
 
     return url.toString();
   }
@@ -56,7 +72,7 @@ export default class AuthorizationCodeGrantControl extends GrantControl {
    */
   async getToken<T = any>(params: GetAuthorizationTokenFuncType<T>) {
     // callback url data
-    const urlData = parseUrl(params.callbackUri);
+    const urlData = parseUrl(params.callbackUrl);
 
     if (urlData.query.state !== this.state) {
       throw new Error("Corrupted answer, the state doesn't match.");
@@ -73,7 +89,7 @@ export default class AuthorizationCodeGrantControl extends GrantControl {
       const requestBody: any = {
         grant_type: "authorization_code",
         code: urlData.query.code,
-        redirect_uri: this.defaultCallback,
+        redirect_uri: this.redirectUri,
         client_id: this.options.clientId,
       };
 

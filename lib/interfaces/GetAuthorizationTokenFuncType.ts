@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import RequestOptions from "./RequestOptions";
 
 type GetAuthorizationTokenFuncType<T = any> = {
-  callbackUri: string;
+  callbackUrl: string;
   requestOptions?: RequestOptions;
   onSuccess?: (data: T) => void;
   onError?: (error: AxiosError<any>) => void;

@@ -23,14 +23,19 @@ export default class OauthClient {
     /**
      * Implicit grant
      */
-    this.implicit = new ImplicitGrantControl({
-      authUrl: this.config.oauthOptions.authUrl,
-      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-      callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
-      clientId: this.config.oauthOptions.clientId,
-      scope: this.config.oauthOptions.scope,
-      state: this.config.oauthOptions.state,
-    });
+    this.implicit = new ImplicitGrantControl(
+      {
+        query: this.config.requestOptions?.query,
+      },
+      {
+        authUrl: this.config.oauthOptions.authUrl,
+        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+        callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
+        clientId: this.config.oauthOptions.clientId,
+        scope: this.config.oauthOptions.scope,
+        state: this.config.oauthOptions.state,
+      }
+    );
 
     /**
      * Authorization code
@@ -52,19 +57,22 @@ export default class OauthClient {
     /**
      * Authorization code with PKCE
      */
-    this.authorizationCodePKCE = new AuthorizationCodePKCEGrantControl({
-      accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
-      authUrl: this.config.oauthOptions.authUrl,
-      callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
-      clientId: this.config.oauthOptions.clientId,
-      codeChallengeMethod:
-        this.config.oauthOptions.codeChallengeMethod ?? "S256",
-      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-      clientSecret: this.config.oauthOptions.clientSecret,
-      codeVerifier: this.config.oauthOptions.codeVerifier,
-      scope: this.config.oauthOptions.scope,
-      state: this.config.oauthOptions.state,
-    });
+    this.authorizationCodePKCE = new AuthorizationCodePKCEGrantControl(
+      this.config.requestOptions ?? {},
+      {
+        accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
+        authUrl: this.config.oauthOptions.authUrl,
+        callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
+        clientId: this.config.oauthOptions.clientId,
+        codeChallengeMethod:
+          this.config.oauthOptions.codeChallengeMethod ?? "S256",
+        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+        clientSecret: this.config.oauthOptions.clientSecret,
+        codeVerifier: this.config.oauthOptions.codeVerifier,
+        scope: this.config.oauthOptions.scope,
+        state: this.config.oauthOptions.state,
+      }
+    );
 
     /**
      * Password grant
