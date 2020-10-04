@@ -8,8 +8,11 @@ export type { default as ClientCredentialsGrantFuncTyle } from "./ClientCredenti
 export type { default as GetAuthorizationTokenFuncType } from "./GetAuthorizationTokenFuncType";
 export type { default as GetAuthorizationUrlFuncType } from "./GetAuthorizationUrlFuncType";
 export type { default as PasswordGrantFuncType } from "./PasswordGrantFuncType";
+export type { default as RefreshTokenFuncType } from "./RefreshTokenFuncType";
 
 export type { default as OauthClientConfig } from "./OauthClientConfig";
 export type { default as OauthOptions } from "./OauthOptions";
 export type { default as RequestOptions } from "./RequestOptions";
 export type { default as TokenResponse } from "./TokenResponse";
+export type { default as TokenRefreshable } from "./TokenRefreshable";
+export type { default as TokenRevokable } from "./TokenRevokable";

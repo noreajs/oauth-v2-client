@@ -23,61 +23,50 @@ export default class OauthClient {
     /**
      * Implicit grant
      */
-    this.implicit = new ImplicitGrantControl(
-      {
-        query: this.config.requestOptions?.query,
-      },
-      {
-        authUrl: this.config.oauthOptions.authUrl,
-        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-        callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
-        clientId: this.config.oauthOptions.clientId,
-        scope: this.config.oauthOptions.scope,
-        state: this.config.oauthOptions.state,
-      }
-    );
+    this.implicit = new ImplicitGrantControl(config, {
+      authUrl: this.config.oauthOptions.authUrl,
+      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+      callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
+      clientId: this.config.oauthOptions.clientId,
+      scope: this.config.oauthOptions.scope,
+      state: this.config.oauthOptions.state,
+    });
 
     /**
      * Authorization code
      */
-    this.authorizationCode = new AuthorizationCodeGrantControl(
-      this.config.requestOptions ?? {},
-      {
-        accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
-        authUrl: this.config.oauthOptions.authUrl,
-        callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
-        clientId: this.config.oauthOptions.clientId,
-        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-        clientSecret: this.config.oauthOptions.clientSecret,
-        scope: this.config.oauthOptions.scope,
-        state: this.config.oauthOptions.state,
-      }
-    );
+    this.authorizationCode = new AuthorizationCodeGrantControl(config, {
+      accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
+      authUrl: this.config.oauthOptions.authUrl,
+      callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
+      clientId: this.config.oauthOptions.clientId,
+      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+      clientSecret: this.config.oauthOptions.clientSecret,
+      scope: this.config.oauthOptions.scope,
+      state: this.config.oauthOptions.state,
+    });
 
     /**
      * Authorization code with PKCE
      */
-    this.authorizationCodePKCE = new AuthorizationCodePKCEGrantControl(
-      this.config.requestOptions ?? {},
-      {
-        accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
-        authUrl: this.config.oauthOptions.authUrl,
-        callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
-        clientId: this.config.oauthOptions.clientId,
-        codeChallengeMethod:
-          this.config.oauthOptions.codeChallengeMethod ?? "S256",
-        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-        clientSecret: this.config.oauthOptions.clientSecret,
-        codeVerifier: this.config.oauthOptions.codeVerifier,
-        scope: this.config.oauthOptions.scope,
-        state: this.config.oauthOptions.state,
-      }
-    );
+    this.authorizationCodePKCE = new AuthorizationCodePKCEGrantControl(config, {
+      accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
+      authUrl: this.config.oauthOptions.authUrl,
+      callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
+      clientId: this.config.oauthOptions.clientId,
+      codeChallengeMethod:
+        this.config.oauthOptions.codeChallengeMethod ?? "S256",
+      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+      clientSecret: this.config.oauthOptions.clientSecret,
+      codeVerifier: this.config.oauthOptions.codeVerifier,
+      scope: this.config.oauthOptions.scope,
+      state: this.config.oauthOptions.state,
+    });
 
     /**
      * Password grant
      */
-    this.password = new PasswordGrantControl(this.config.requestOptions ?? {}, {
+    this.password = new PasswordGrantControl(config, {
       accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
       username: `${this.config.oauthOptions.username}`,
       password: `${this.config.oauthOptions.password}`,
@@ -90,15 +79,12 @@ export default class OauthClient {
     /**
      * Client credentials
      */
-    this.client = new ClientCredentialsGrantControl(
-      this.config.requestOptions ?? {},
-      {
-        accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
-        clientId: this.config.oauthOptions.clientId,
-        clientSecret: this.config.oauthOptions.clientSecret,
-        scope: this.config.oauthOptions.scope,
-        basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
-      }
-    );
+    this.client = new ClientCredentialsGrantControl(config, {
+      accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
+      clientId: this.config.oauthOptions.clientId,
+      clientSecret: this.config.oauthOptions.clientSecret,
+      scope: this.config.oauthOptions.scope,
+      basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+    });
   }
 }

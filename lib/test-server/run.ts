@@ -91,7 +91,7 @@ app.get("/auth-code-pkce/callback", async function (req, res) {
  */
 app.post("/oauth/password", [
   json(),
-  async function (req:any, res:any) {
+  async function (req: any, res: any) {
     try {
       await noreaApi.password.getToken({
         username: req.body.username,
@@ -109,13 +109,24 @@ app.post("/oauth/password", [
   },
 ]);
 
+app.get("/oauth/password/refresh", async function (req: any, res: any) {
+  await noreaApi.password.refresh({
+    onSuccess: (data) => {
+      return res.status(200).json(noreaApi.password.token);
+    },
+    onError: (error) => {
+      return res.status(500).json(error.response?.data);
+    },
+  });
+});
+
 /**
  * Client credentials
  * -----------------------------------
  */
 app.post("/oauth/client", [
   json(),
-  async function (req:any, res:any) {
+  async function (req: any, res: any) {
     await noreaApi.client.getToken({
       onSuccess: (data) => {
         return res.status(200).json(data);
@@ -124,7 +135,7 @@ app.post("/oauth/client", [
         return res.status(500).json(error.response?.data);
       },
     });
-  }
+  },
 ]);
 
 /**

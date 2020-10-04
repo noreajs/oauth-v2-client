@@ -2,23 +2,18 @@ import ImplicitGrantOptions from "../interfaces/ImplicitGrantOptions";
 import GrantControl from "./GrantControl";
 import { parseUrl } from "query-string";
 import { Obj } from "@noreajs/common";
-import RequestOptions from "../interfaces/RequestOptions";
 import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncType";
+import { OauthClientConfig } from "../interfaces";
 
 export default class ImplicitGrantControl extends GrantControl {
   private options: ImplicitGrantOptions;
-  private requestOptions: Omit<RequestOptions, "headers" | "body">;
   private state: string;
   private redirectUri: string;
 
-  constructor(
-    requestOptions: Omit<RequestOptions, "headers" | "body">,
-    options: ImplicitGrantOptions
-  ) {
-    super();
+  constructor(config: OauthClientConfig, options: ImplicitGrantOptions) {
+    super(config);
 
     this.options = options;
-    this.requestOptions = requestOptions;
 
     // callback url
     this.redirectUri = this.options.callbackUrl;
