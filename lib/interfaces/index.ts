@@ -16,3 +16,4 @@ export type { default as RequestOptions } from "./RequestOptions";
 export type { default as TokenResponse } from "./TokenResponse";
 export type { default as TokenRefreshable } from "./TokenRefreshable";
 export type { default as TokenRevokable } from "./TokenRevokable";
+export type { default as RevokeTokenFuncType } from "./RevokeTokenFuncType";

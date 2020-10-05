@@ -108,6 +108,7 @@ export default class AuthorizationCodePKCEGrantControl
       const requestBody: any = {
         grant_type: "authorization_code",
         code: urlData.query.code,
+        state: this.state,
         redirect_uri: this.redirectUri,
         code_verifier: this.codeVerifier,
       };

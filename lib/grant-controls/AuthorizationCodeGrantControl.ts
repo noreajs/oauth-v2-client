@@ -1,10 +1,13 @@
 import { Obj } from "@noreajs/common";
 import Axios from "axios";
 import { parseUrl } from "query-string";
-import { refreshToken } from "../helpers";
+import { refreshToken, revokeToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import injectQueryParams from "../helpers/injectQueryParamsFunc";
-import { OauthClientConfig } from "../interfaces";
+import {
+  OauthClientConfig,
+  RevokeTokenFuncType
+} from "../interfaces";
 import AuthorizationCodeGrantOptions from "../interfaces/AuthorizationCodeGrantOptions";
 import GetAuthorizationTokenFuncType from "../interfaces/GetAuthorizationTokenFuncType";
 import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncType";
@@ -95,6 +98,7 @@ export default class AuthorizationCodeGrantControl
         grant_type: "authorization_code",
         code: urlData.query.code,
         redirect_uri: this.redirectUri,
+        state: this.state,
       };
 
       /**

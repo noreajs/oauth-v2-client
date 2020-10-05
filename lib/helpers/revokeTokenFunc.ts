@@ -1,38 +1,36 @@
 import { Obj } from "@noreajs/common";
 import Axios from "axios";
-import {
-  OauthClientConfig,
-  RefreshTokenFuncType,
-  TokenResponse,
-} from "../interfaces";
+import { OauthClientConfig, TokenResponse } from "../interfaces";
+import RevokeTokenFuncType from "../interfaces/RevokeTokenFuncType";
 import generateBasicAuthentication from "./basicAuthFunc";
 import injectQueryParams from "./injectQueryParamsFunc";
 
 /**
- * Refresh a token
+ * Revoke a token
  * @param props function property
  */
-export default async function refreshToken<T = any>(props: {
-  params: RefreshTokenFuncType<T>;
+export default async function revokeToken<T = any>(props: {
+  params: RevokeTokenFuncType<T>;
   accessTokenUrl: string;
   token?: TokenResponse;
   config: OauthClientConfig;
   onSuccess: (data: any) => void;
 }) {
   /**
-   * Only if refresh_token is available
+   * Only if access token is available
    */
-  if (props.token?.refresh_token) {
+  if (props.token?.access_token) {
     // headers
     const requestHeaders: any = {};
 
     // body
     const requestBody: any = {
-      grant_type: "refresh_token",
-      refresh_token: props.token?.refresh_token,
-      scope: props.config.oauthOptions.scope
-        ? props.config.oauthOptions.scope.join(" ")
-        : "",
+      token_type_hint: props.params.isRefreshToken
+        ? "refresh_token"
+        : "access_token",
+      token: props.params.isRefreshToken
+        ? props.token?.refresh_token
+        : props.token?.access_token,
     };
 
     /**
@@ -55,7 +53,9 @@ export default async function refreshToken<T = any>(props: {
      */
     await Axios.post(
       injectQueryParams(
-        props.accessTokenUrl,
+        props.accessTokenUrl.endsWith("/")
+          ? `${props.accessTokenUrl}revoke`
+          : `${props.accessTokenUrl}/revoke`,
         Obj.merge(
           props.params.requestOptions?.query ?? {},
           props.config.requestOptions?.query ?? {}
@@ -80,6 +80,6 @@ export default async function refreshToken<T = any>(props: {
         if (props.params.onError) props.params.onError(error);
       });
   } else {
-    throw new Error("Refresh token is required");
+    throw new Error("Access token is required");
   }
 }
