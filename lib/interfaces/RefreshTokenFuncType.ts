@@ -1,10 +1,6 @@
 import { AxiosError } from "axios";
-import RequestOptions from "./RequestOptions";
+import TokenRequestType from "./TokenRequestType";
 
-type RefreshTokenFuncType<T = any> = {
-  requestOptions?: RequestOptions;
-  onSuccess?: (data: T) => void;
-  onError?: (error: AxiosError<any>) => void;
-};
+type RefreshTokenFuncType<T = any> = TokenRequestType<T> & {};
 
 export default RefreshTokenFuncType;

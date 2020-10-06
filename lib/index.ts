@@ -3,7 +3,7 @@ import OauthClient from "./OauthClient";
 export {
   AuthorizationCodeGrantOptions,
   AuthorizationCodePKCEGrantOptions,
-  ClientCredentialsGrantFuncTyle,
+  ClientCredentialsGrantFuncType,
   ClientCredentialsGrantOptions,
   GetAuthorizationTokenFuncType,
   GetAuthorizationUrlFuncType,
@@ -29,6 +29,7 @@ export {
   refreshToken,
   revokeToken,
   renderRequestBody,
+  requestToken,
 } from "./helpers";
 
 export { default as OauthClient } from "./OauthClient";

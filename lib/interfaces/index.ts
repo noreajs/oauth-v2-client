@@ -4,7 +4,7 @@ export type { default as ClientCredentialsGrantOptions } from "./ClientCredentia
 export type { default as PasswordGrantOptions } from "./PasswordGrantOptions";
 export type { default as ImplicitGrantOptions } from "./ImplicitGrantOptions";
 
-export type { default as ClientCredentialsGrantFuncTyle } from "./ClientCredentialsGrantFuncTyle";
+export type { default as ClientCredentialsGrantFuncType } from "./ClientCredentialsGrantFuncType";
 export type { default as GetAuthorizationTokenFuncType } from "./GetAuthorizationTokenFuncType";
 export type { default as GetAuthorizationUrlFuncType } from "./GetAuthorizationUrlFuncType";
 export type { default as PasswordGrantFuncType } from "./PasswordGrantFuncType";

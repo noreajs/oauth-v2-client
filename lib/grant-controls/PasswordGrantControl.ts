@@ -1,6 +1,6 @@
 import { Obj } from "@noreajs/common";
 import Axios from "axios";
-import { refreshToken, renderRequestBody } from "../helpers";
+import { refreshToken, renderRequestBody, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import injectQueryParams from "../helpers/injectQueryParamsFunc";
 import { OauthClientConfig } from "../interfaces";
@@ -52,57 +52,25 @@ export default class PasswordGrantControl
     }
 
     /**
-     * Final payloads
+     * Request a token
      */
-    const headers = Obj.merge(
-      requestHeaders,
-      Obj.merge(
-        params.requestOptions?.headers ?? {},
-        this.requestOptions.headers ?? {}
-      )
-    );
-
-    // query parameters
-    const queryParams = Obj.merge(
-      params.requestOptions?.query ?? {},
-      this.requestOptions.query ?? {}
-    );
-
-    //body
-    const body = Obj.merge(
-      requestBody,
-      Obj.merge(
-        params.requestOptions?.body ?? {},
-        this.requestOptions.body ?? {}
-      )
-    );
-
-    /**
-     * Getting the token
-     * --------------------
-     */
-    await Axios.post(
-      injectQueryParams(this.options.accessTokenUrl, queryParams),
-      renderRequestBody(
-        params.requestOptions?.bodyType ??
-          this.requestOptions.bodyType ??
-          "json",
-        body
-      ),
-      {
-        headers: headers,
-      }
-    )
-      .then((response) => {
-        // update the token
-        this.setToken(response.data);
-
-        // call callback
-        if (params.onSuccess) params.onSuccess(response.data);
-      })
-      .catch((error) => {
-        if (params.onError) params.onError(error);
-      });
+    requestToken<T>({
+      accessTokenUrl: this.options.accessTokenUrl,
+      body: requestBody,
+      config: {
+        oauthOptions: this.oauthOptions,
+        requestOptions: this.requestOptions,
+      },
+      headers: requestHeaders,
+      onError: params.onError,
+      onSuccess: (data) => {
+        // this update token
+        this.setToken(data);
+        // call the parent token
+        if (params.onSuccess) params.onSuccess(data);
+      },
+      requestOptions: params.requestOptions,
+    });
   }
 
   /**

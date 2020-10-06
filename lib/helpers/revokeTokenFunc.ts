@@ -1,20 +1,18 @@
-import { Obj } from "@noreajs/common";
-import Axios from "axios";
 import { OauthClientConfig, TokenResponse } from "../interfaces";
 import RevokeTokenFuncType from "../interfaces/RevokeTokenFuncType";
+import TokenRequestType from "../interfaces/TokenRequestType";
 import generateBasicAuthentication from "./basicAuthFunc";
-import injectQueryParams from "./injectQueryParamsFunc";
+import requestToken from "./requestTokenFunc";
 
 /**
  * Revoke a token
  * @param props function property
  */
-export default async function revokeToken<T = any>(props: {
+export default async function revokeToken<T = any>(props: TokenRequestType<T> & {
   params: RevokeTokenFuncType<T>;
   accessTokenUrl: string;
   token?: TokenResponse;
   config: OauthClientConfig;
-  onSuccess: (data: any) => void;
 }) {
   /**
    * Only if access token is available
@@ -48,37 +46,17 @@ export default async function revokeToken<T = any>(props: {
     }
 
     /**
-     * Getting the token
-     * --------------------
+     * Request a token
      */
-    await Axios.post(
-      injectQueryParams(
-        props.accessTokenUrl.endsWith("/")
-          ? `${props.accessTokenUrl}revoke`
-          : `${props.accessTokenUrl}/revoke`,
-        Obj.merge(
-          props.params.requestOptions?.query ?? {},
-          props.config.requestOptions?.query ?? {}
-        )
-      ),
-      Obj.merge(requestBody, props.config.requestOptions?.body ?? {}),
-      {
-        headers: Obj.merge(
-          requestHeaders,
-          props.config.requestOptions?.headers ?? {}
-        ),
-      }
-    )
-      .then((response) => {
-        // internal success callback
-        props.onSuccess(response.data);
-
-        // call callback
-        if (props.params.onSuccess) props.params.onSuccess(response.data);
-      })
-      .catch((error) => {
-        if (props.params.onError) props.params.onError(error);
-      });
+    requestToken<T>({
+      accessTokenUrl: props.accessTokenUrl,
+      body: requestBody,
+      config: props.config,
+      headers: requestBody,
+      onError: props.onError,
+      onSuccess: props.onSuccess,
+      requestOptions: props.requestOptions,
+    });
   } else {
     throw new Error("Access token is required");
   }

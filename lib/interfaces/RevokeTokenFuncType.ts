@@ -1,11 +1,8 @@
 import { AxiosError } from "axios";
-import RequestOptions from "./RequestOptions";
+import TokenRequestType from "./TokenRequestType";
 
-type RevokeTokenFuncType<T = any> = {
+type RevokeTokenFuncType<T = any> = TokenRequestType<T> & {
   isRefreshToken: boolean;
-  requestOptions?: RequestOptions;
-  onSuccess?: (data: T) => void;
-  onError?: (error: AxiosError<any>) => void;
 };
 
 export default RevokeTokenFuncType;

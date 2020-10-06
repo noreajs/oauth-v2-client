@@ -1,12 +1,9 @@
 import { AxiosError } from "axios";
-import RequestOptions from "./RequestOptions";
+import TokenRequestType from "./TokenRequestType";
 
-type PasswordGrantFuncType<T = any> = {
+type PasswordGrantFuncType<T = any> = TokenRequestType<T> & {
   username?: string;
   password?: string;
-  requestOptions?: RequestOptions;
-  onSuccess?: (data: T) => void;
-  onError?: (error: AxiosError<any>) => void;
 };
 
 export default PasswordGrantFuncType;
