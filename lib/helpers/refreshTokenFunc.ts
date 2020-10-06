@@ -7,6 +7,7 @@ import {
 } from "../interfaces";
 import generateBasicAuthentication from "./basicAuthFunc";
 import injectQueryParams from "./injectQueryParamsFunc";
+import renderRequestBody from "./renderRequestBodyFunc";
 
 /**
  * Refresh a token
@@ -50,23 +51,45 @@ export default async function refreshToken<T = any>(props: {
     }
 
     /**
+     * Final payloads
+     */
+    const headers = Obj.merge(
+      requestHeaders,
+      Obj.merge(
+        props.params.requestOptions?.headers ?? {},
+        props.config.requestOptions?.headers ?? {}
+      )
+    );
+
+    // query parameters
+    const queryParams = Obj.merge(
+      props.params.requestOptions?.query ?? {},
+      props.config.requestOptions?.query ?? {}
+    );
+
+    //body
+    const body = Obj.merge(
+      requestBody,
+      Obj.merge(
+        props.params.requestOptions?.body ?? {},
+        props.config.requestOptions?.body ?? {}
+      )
+    );
+
+    /**
      * Getting the token
      * --------------------
      */
     await Axios.post(
-      injectQueryParams(
-        props.accessTokenUrl,
-        Obj.merge(
-          props.params.requestOptions?.query ?? {},
-          props.config.requestOptions?.query ?? {}
-        )
+      injectQueryParams(props.accessTokenUrl, queryParams),
+      renderRequestBody(
+        props.params.requestOptions?.bodyType ??
+          props.config.requestOptions?.bodyType ??
+          "json",
+        body
       ),
-      Obj.merge(requestBody, props.config.requestOptions?.body ?? {}),
       {
-        headers: Obj.merge(
-          requestHeaders,
-          props.config.requestOptions?.headers ?? {}
-        ),
+        headers: headers,
       }
     )
       .then((response) => {

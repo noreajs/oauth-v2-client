@@ -18,6 +18,7 @@ export {
   TokenRefreshable,
   TokenRevokable,
   RevokeTokenFuncType,
+  RequestBodyType,
 } from "./interfaces";
 
 export {
@@ -27,6 +28,7 @@ export {
   injectQueryParams,
   refreshToken,
   revokeToken,
+  renderRequestBody,
 } from "./helpers";
 
 export { default as OauthClient } from "./OauthClient";

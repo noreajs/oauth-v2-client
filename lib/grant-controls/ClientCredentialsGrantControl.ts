@@ -1,6 +1,6 @@
 import { Obj } from "@noreajs/common";
 import Axios from "axios";
-import { refreshToken } from "../helpers";
+import { refreshToken, renderRequestBody } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import injectQueryParams from "../helpers/injectQueryParamsFunc";
 import { OauthClientConfig } from "../interfaces";
@@ -10,7 +10,9 @@ import RefreshTokenFuncType from "../interfaces/RefreshTokenFuncType";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
 import GrantControl from "./GrantControl";
 
-export default class ClientCredentialsGrantControl extends GrantControl implements TokenRefreshable {
+export default class ClientCredentialsGrantControl
+  extends GrantControl
+  implements TokenRefreshable {
   private options: ClientCredentialsGrantOptions;
 
   constructor(
@@ -51,20 +53,46 @@ export default class ClientCredentialsGrantControl extends GrantControl implemen
     }
 
     /**
+     * Final payloads
+     * ============================
+     */
+    const headers = Obj.merge(
+      requestHeaders,
+      Obj.merge(
+        params.requestOptions?.headers ?? {},
+        this.requestOptions.headers ?? {}
+      )
+    );
+
+    // query parameters
+    const queryParams = Obj.merge(
+      params.requestOptions?.query ?? {},
+      this.requestOptions.query ?? {}
+    );
+
+    //body
+    const body = Obj.merge(
+      requestBody,
+      Obj.merge(
+        params.requestOptions?.body ?? {},
+        this.requestOptions.body ?? {}
+      )
+    );
+
+    /**
      * Getting the token
      * --------------------
      */
     await Axios.post(
-      injectQueryParams(
-        this.options.accessTokenUrl,
-        Obj.merge(
-          params.requestOptions?.query ?? {},
-          this.requestOptions.query ?? {}
-        )
+      injectQueryParams(this.options.accessTokenUrl, queryParams),
+      renderRequestBody(
+        params.requestOptions?.bodyType ??
+          this.requestOptions.bodyType ??
+          "json",
+        body
       ),
-      Obj.merge(requestBody, this.requestOptions.body ?? {}),
       {
-        headers: Obj.merge(requestHeaders, this.requestOptions.headers ?? {}),
+        headers: headers,
       }
     )
       .then((response) => {

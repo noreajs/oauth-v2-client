@@ -1,7 +1,7 @@
 import { Obj } from "@noreajs/common";
 import Axios from "axios";
 import { parseUrl } from "query-string";
-import { refreshToken } from "../helpers";
+import { refreshToken, renderRequestBody } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import injectQueryParams from "../helpers/injectQueryParamsFunc";
 import {
@@ -128,20 +128,46 @@ export default class AuthorizationCodePKCEGrantControl
       }
 
       /**
+       * Final payloads
+       * ============================
+       */
+      const headers = Obj.merge(
+        requestHeaders,
+        Obj.merge(
+          params.requestOptions?.headers ?? {},
+          this.requestOptions.headers ?? {}
+        )
+      );
+
+      // query parameters
+      const queryParams = Obj.merge(
+        params.requestOptions?.query ?? {},
+        this.requestOptions.query ?? {}
+      );
+
+      //body
+      const body = Obj.merge(
+        requestBody,
+        Obj.merge(
+          params.requestOptions?.body ?? {},
+          this.requestOptions.body ?? {}
+        )
+      );
+
+      /**
        * Getting the token
        * --------------------
        */
       await Axios.post(
-        injectQueryParams(
-          this.options.accessTokenUrl,
-          Obj.merge(
-            params.requestOptions?.query ?? {},
-            this.requestOptions.query ?? {}
-          )
+        injectQueryParams(this.options.accessTokenUrl, queryParams),
+        renderRequestBody(
+          params.requestOptions?.bodyType ??
+            this.requestOptions.bodyType ??
+            "json",
+          body
         ),
-        Obj.merge(requestBody, this.requestOptions.body ?? {}),
         {
-          headers: Obj.merge(requestHeaders, this.requestOptions.headers ?? {}),
+          headers: headers,
         }
       )
         .then((response) => {

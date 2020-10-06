@@ -1,5 +1,8 @@
+import RequestBodyType from "./RequestBodyType";
+
 export default interface RequestOptions {
-  body?: any;
   headers?: any;
   query?: any;
+  body?: any;
+  bodyType?: RequestBodyType;
 }
