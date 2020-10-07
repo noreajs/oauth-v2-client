@@ -1,9 +1,9 @@
 import { refreshToken, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import { OauthClientConfig } from "../interfaces";
-import ClientCredentialsGrantFuncType from "../interfaces/ClientCredentialsGrantFuncType";
+import ClientCredentialsGrantFuncConfig from "../interfaces/ClientCredentialsGrantFuncConfig";
 import ClientCredentialsGrantOptions from "../interfaces/ClientCredentialsGrantOptions";
-import RefreshTokenFuncType from "../interfaces/RefreshTokenFuncType";
+import RefreshTokenFuncConfig from "../interfaces/RefreshTokenFuncConfig";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
 import GrantControl from "./GrantControl";
 
@@ -25,7 +25,7 @@ export default class ClientCredentialsGrantControl
    * Get Client Credentials Grant Token
    * @param params parameters
    */
-  async getToken<T = any>(params: ClientCredentialsGrantFuncType<T>) {
+  async getToken<T = any>(params: ClientCredentialsGrantFuncConfig<T>) {
     // headers
     const requestHeaders: any = {};
 
@@ -75,7 +75,7 @@ export default class ClientCredentialsGrantControl
    * Refresh the token
    * @param params parameters
    */
-  async refresh<T = any>(params: RefreshTokenFuncType<T>) {
+  async refresh<T = any>(params: RefreshTokenFuncConfig<T>) {
     refreshToken<T>({
       accessTokenUrl: this.options.accessTokenUrl,
       config: {

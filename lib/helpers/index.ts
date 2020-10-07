@@ -5,3 +5,4 @@ export { generateCodeChallenge, generateCodeVerifier } from "./pkceFactory";
 export { default as revokeToken } from "./revokeTokenFunc";
 export { default as renderRequestBody } from "./renderRequestBodyFunc";
 export { default as requestToken } from "./requestTokenFunc";
+export { capitalize } from "./Utils";

@@ -8,9 +8,9 @@ import {
 } from "../helpers/pkceFactory";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodePKCEGrantOptions from "../interfaces/AuthorizationCodePKCEGrantOptions";
-import GetAuthorizationTokenFuncType from "../interfaces/GetAuthorizationTokenFuncType";
-import GetAuthorizationUrlFuncType from "../interfaces/GetAuthorizationUrlFuncType";
-import RefreshTokenFuncType from "../interfaces/RefreshTokenFuncType";
+import GetAuthorizationTokenFuncConfig from "../interfaces/GetAuthorizationTokenFuncConfig";
+import GetAuthorizationUrlFuncConfig from "../interfaces/GetAuthorizationUrlFuncConfig";
+import RefreshTokenFuncConfig from "../interfaces/RefreshTokenFuncConfig";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
 import GrantControl from "./GrantControl";
 
@@ -46,9 +46,9 @@ export default class AuthorizationCodePKCEGrantControl
 
   /**
    * Get authentication url
-   * @param {GetAuthorizationUrlFuncType} options redirect uri, response type
+   * @param {GetAuthorizationUrlFuncConfig} options redirect uri, response type
    */
-  getAuthUri(options?: GetAuthorizationUrlFuncType) {
+  getAuthUri(options?: GetAuthorizationUrlFuncConfig) {
     // update callback url
     this.redirectUri = options?.callbackUrl ?? this.redirectUri;
 
@@ -85,9 +85,9 @@ export default class AuthorizationCodePKCEGrantControl
 
   /**
    * Get token with the authorization code extracted in the callback uri
-   * @param params {GetAuthorizationTokenFuncType} parameters
+   * @param params {GetAuthorizationTokenFuncConfig} parameters
    */
-  async getToken<T = any>(params: GetAuthorizationTokenFuncType<T>) {
+  async getToken<T = any>(params: GetAuthorizationTokenFuncConfig<T>) {
     // callback url data
     const urlData = parseUrl(params.callbackUrl);
 
@@ -155,7 +155,7 @@ export default class AuthorizationCodePKCEGrantControl
    * Refresh the token
    * @param params parameters
    */
-  async refresh<T = any>(params: RefreshTokenFuncType<T>) {
+  async refresh<T = any>(params: RefreshTokenFuncConfig<T>) {
     refreshToken<T>({
       accessTokenUrl: this.options.accessTokenUrl,
       config: {

@@ -1,5 +1,5 @@
-import RefreshTokenFuncType from "./RefreshTokenFuncType";
+import RefreshTokenFuncConfig from "./RefreshTokenFuncConfig";
 
 export default interface TokenRefreshable<T = any> {
-  refresh<T>(params: RefreshTokenFuncType<T>): void | Promise<void>;
+  refresh<T>(params: RefreshTokenFuncConfig<T>): void | Promise<void>;
 }

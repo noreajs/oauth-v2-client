@@ -1,5 +1,5 @@
 import { OauthClientConfig, TokenResponse } from "../interfaces";
-import RevokeTokenFuncType from "../interfaces/RevokeTokenFuncType";
+import RevokeTokenFuncConfig from "../interfaces/RevokeTokenFuncConfig";
 import TokenRequestType from "../interfaces/TokenRequestType";
 import generateBasicAuthentication from "./basicAuthFunc";
 import requestToken from "./requestTokenFunc";
@@ -9,7 +9,7 @@ import requestToken from "./requestTokenFunc";
  * @param props function property
  */
 export default async function revokeToken<T = any>(props: TokenRequestType<T> & {
-  params: RevokeTokenFuncType<T>;
+  params: RevokeTokenFuncConfig<T>;
   accessTokenUrl: string;
   token?: TokenResponse;
   config: OauthClientConfig;

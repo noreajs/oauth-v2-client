@@ -2,7 +2,7 @@ import { Obj } from "@noreajs/common";
 import { requestToken } from ".";
 import {
   OauthClientConfig,
-  RefreshTokenFuncType,
+  RefreshTokenFuncConfig,
   TokenResponse,
 } from "../interfaces";
 import generateBasicAuthentication from "./basicAuthFunc";
@@ -12,7 +12,7 @@ import generateBasicAuthentication from "./basicAuthFunc";
  * @param props function property
  */
 export default async function refreshToken<T = any>(props: {
-  params: RefreshTokenFuncType<T>;
+  params: RefreshTokenFuncConfig<T>;
   accessTokenUrl: string;
   token?: TokenResponse;
   config: OauthClientConfig;

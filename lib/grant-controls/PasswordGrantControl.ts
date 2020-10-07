@@ -4,9 +4,9 @@ import { refreshToken, renderRequestBody, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import injectQueryParams from "../helpers/injectQueryParamsFunc";
 import { OauthClientConfig } from "../interfaces";
-import PasswordGrantFuncType from "../interfaces/PasswordGrantFuncType";
+import PasswordGrantFuncConfig from "../interfaces/PasswordGrantFuncConfig";
 import PasswordGrantOptions from "../interfaces/PasswordGrantOptions";
-import RefreshTokenFuncType from "../interfaces/RefreshTokenFuncType";
+import RefreshTokenFuncConfig from "../interfaces/RefreshTokenFuncConfig";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
 import GrantControl from "./GrantControl";
 
@@ -25,7 +25,7 @@ export default class PasswordGrantControl
    * Get Password Grant Token
    * @param params parameters
    */
-  async getToken<T = any>(params: PasswordGrantFuncType<T>) {
+  async getToken<T = any>(params: PasswordGrantFuncConfig<T>) {
     // headers
     const requestHeaders: any = {};
 
@@ -77,7 +77,7 @@ export default class PasswordGrantControl
    * Refresh the token
    * @param params parameters
    */
-  async refresh<T = any>(params: RefreshTokenFuncType<T>) {
+  async refresh<T = any>(params: RefreshTokenFuncConfig<T>) {
     refreshToken<T>({
       accessTokenUrl: this.options.accessTokenUrl,
       config: {

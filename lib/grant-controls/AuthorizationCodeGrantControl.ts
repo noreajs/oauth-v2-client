@@ -6,9 +6,9 @@ import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import injectQueryParams from "../helpers/injectQueryParamsFunc";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodeGrantOptions from "../interfaces/AuthorizationCodeGrantOptions";
-import GetAuthorizationTokenFuncType from "../interfaces/GetAuthorizationTokenFuncType";
-import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncType";
-import RefreshTokenFuncType from "../interfaces/RefreshTokenFuncType";
+import GetAuthorizationTokenFuncConfig from "../interfaces/GetAuthorizationTokenFuncConfig";
+import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncConfig";
+import RefreshTokenFuncConfig from "../interfaces/RefreshTokenFuncConfig";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
 import GrantControl from "./GrantControl";
 
@@ -73,9 +73,9 @@ export default class AuthorizationCodeGrantControl
 
   /**
    * Get token with the authorization code extracted in the callback uri
-   * @param params {GetAuthorizationTokenFuncType} parameters
+   * @param params {GetAuthorizationTokenFuncConfig} parameters
    */
-  async getToken<T = any>(params: GetAuthorizationTokenFuncType<T>) {
+  async getToken<T = any>(params: GetAuthorizationTokenFuncConfig<T>) {
     // callback url data
     const urlData = parseUrl(params.callbackUrl);
 
@@ -141,7 +141,7 @@ export default class AuthorizationCodeGrantControl
    * Refresh the token
    * @param params parameters
    */
-  async refresh<T = any>(params: RefreshTokenFuncType<T>) {
+  async refresh<T = any>(params: RefreshTokenFuncConfig<T>) {
     refreshToken<T>({
       accessTokenUrl: this.options.accessTokenUrl,
       config: {

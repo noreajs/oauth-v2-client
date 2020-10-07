@@ -2,7 +2,7 @@ import ImplicitGrantOptions from "../interfaces/ImplicitGrantOptions";
 import GrantControl from "./GrantControl";
 import { parseUrl } from "query-string";
 import { Obj } from "@noreajs/common";
-import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncType";
+import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncConfig";
 import { OauthClientConfig } from "../interfaces";
 
 export default class ImplicitGrantControl extends GrantControl {

@@ -1,5 +1,5 @@
-import RevokeTokenFuncType from "./RevokeTokenFuncType";
+import RevokeTokenFuncConfig from "./RevokeTokenFuncConfig";
 
 export default interface TokenRevokable<T=any> {
-  revoke<T>(props: RevokeTokenFuncType<T>): void | Promise<void>;
+  revoke<T>(props: RevokeTokenFuncConfig<T>): void | Promise<void>;
 }
