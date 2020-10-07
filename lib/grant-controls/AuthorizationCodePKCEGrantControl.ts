@@ -58,7 +58,7 @@ export default class AuthorizationCodePKCEGrantControl
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
       state: this.state,
-      scope: this.options.scope ? this.options.scope.join(" ") : "",
+      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
       code_challenge: this.codeChallenge,
       code_challenge_method: this.options.codeChallengeMethod,
     };

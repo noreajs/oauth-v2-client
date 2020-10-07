@@ -30,7 +30,7 @@ export default class OauthClient {
       basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
       callbackUrl: `${this.config.oauthOptions.callbackUrl}`,
       clientId: this.config.oauthOptions.clientId,
-      scope: this.config.oauthOptions.scope,
+      scopes: this.config.oauthOptions.scopes,
       state: this.config.oauthOptions.state,
     });
 
@@ -44,7 +44,7 @@ export default class OauthClient {
       clientId: this.config.oauthOptions.clientId,
       basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
       clientSecret: this.config.oauthOptions.clientSecret,
-      scope: this.config.oauthOptions.scope,
+      scopes: this.config.oauthOptions.scopes,
       state: this.config.oauthOptions.state,
     });
 
@@ -61,7 +61,7 @@ export default class OauthClient {
       basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
       clientSecret: this.config.oauthOptions.clientSecret,
       codeVerifier: this.config.oauthOptions.codeVerifier,
-      scope: this.config.oauthOptions.scope,
+      scopes: this.config.oauthOptions.scopes,
       state: this.config.oauthOptions.state,
     });
 
@@ -74,7 +74,7 @@ export default class OauthClient {
       password: `${this.config.oauthOptions.password}`,
       clientId: this.config.oauthOptions.clientId,
       clientSecret: this.config.oauthOptions.clientSecret,
-      scope: this.config.oauthOptions.scope,
+      scopes: this.config.oauthOptions.scopes,
       basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
     });
 
@@ -85,7 +85,7 @@ export default class OauthClient {
       accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
       clientId: this.config.oauthOptions.clientId,
       clientSecret: this.config.oauthOptions.clientSecret,
-      scope: this.config.oauthOptions.scope,
+      scopes: this.config.oauthOptions.scopes,
       basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
     });
 

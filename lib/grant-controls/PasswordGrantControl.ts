@@ -31,7 +31,7 @@ export default class PasswordGrantControl
       grant_type: "password",
       username: params.username ?? this.options.username,
       password: params.password ?? this.options.password,
-      scope: this.options.scope ? this.options.scope.join(" ") : "",
+      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
     };
 
     /**

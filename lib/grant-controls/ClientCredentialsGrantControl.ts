@@ -32,7 +32,7 @@ export default class ClientCredentialsGrantControl
     // body
     const requestBody: any = {
       grant_type: "client",
-      scope: this.options.scope ? this.options.scope.join(" ") : "",
+      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
     };
 
     /**

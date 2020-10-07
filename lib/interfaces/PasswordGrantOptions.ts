@@ -4,6 +4,6 @@ export default interface PasswordGrantOptions {
   password: string;
   clientId: string;
   clientSecret?: string;
-  scope?: Array<string>;
+  scopes?: Array<string>;
   basicAuthHeader?: boolean;
 }

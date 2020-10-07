@@ -34,4 +34,4 @@ export {
   capitalize,
 } from "./helpers";
 
-export { default as OauthClient } from "./OauthClient";
+export { default } from "./OauthClient";

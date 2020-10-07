@@ -4,7 +4,7 @@ export default interface OauthOptions {
   accessTokenUrl?: string;
   clientId: string;
   clientSecret?: string;
-  scope?: Array<string>;
+  scopes?: Array<string>;
   state?: string;
   username?: string;
   password?: string;

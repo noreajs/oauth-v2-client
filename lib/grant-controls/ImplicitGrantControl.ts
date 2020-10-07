@@ -36,7 +36,7 @@ export default class ImplicitGrantControl extends GrantControl {
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
       state: this.state,
-      scope: this.options.scope ? this.options.scope.join(" ") : "",
+      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
     };
 
     // merged params

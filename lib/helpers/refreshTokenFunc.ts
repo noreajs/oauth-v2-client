@@ -28,8 +28,8 @@ export default async function refreshToken<T = any>(props: {
     const requestBody: any = {
       grant_type: "refresh_token",
       refresh_token: props.token?.refresh_token,
-      scope: props.config.oauthOptions.scope
-        ? props.config.oauthOptions.scope.join(" ")
+      scope: props.config.oauthOptions.scopes
+        ? props.config.oauthOptions.scopes.join(" ")
         : "",
     };
 

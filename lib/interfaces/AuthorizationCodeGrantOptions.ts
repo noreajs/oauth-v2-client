@@ -4,7 +4,7 @@ export default interface AuthorizationCodeGrantOptions {
   accessTokenUrl: string;
   clientId: string;
   clientSecret?: string;
-  scope?: Array<string>;
+  scopes?: Array<string>;
   state?: string;
   basicAuthHeader?: boolean;
 }
