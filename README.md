@@ -149,7 +149,7 @@ api.authorizationCode.getToken({
   });
 ```
 
-**Full Example ** (Node.js + Typescript)
+**Full Example** (Node.js + Typescript)
 
 > Dependencies: body-parser, express, oauth-v2-client
 
@@ -218,7 +218,7 @@ api.authorizationCodePKCE.getToken({
 });
 ```
 
-**Full Example ** (Node.js + Typescript)
+**Full Example** (Node.js + Typescript)
 
 > Dependencies: body-parser, express, oauth-v2-client
 
