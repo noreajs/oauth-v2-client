@@ -1,9 +1,7 @@
 import { Obj } from "@noreajs/common";
-import Axios from "axios";
 import { parseUrl } from "query-string";
-import { refreshToken, renderRequestBody, requestToken } from "../helpers";
+import { refreshToken, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
-import injectQueryParams from "../helpers/injectQueryParamsFunc";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodeGrantOptions from "../interfaces/AuthorizationCodeGrantOptions";
 import GetAuthorizationTokenFuncConfig from "../interfaces/GetAuthorizationTokenFuncConfig";

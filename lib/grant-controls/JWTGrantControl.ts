@@ -1,52 +1,50 @@
+import { Obj } from "@noreajs/common";
+import { parseUrl } from "query-string";
 import { refreshToken, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import { OauthClientConfig } from "../interfaces";
-import PasswordGrantFuncConfig from "../interfaces/PasswordGrantFuncConfig";
-import PasswordGrantOptions from "../interfaces/PasswordGrantOptions";
+import JWTGrantOptions from "../interfaces/JWTGrantOptions";
+import GetAuthorizationTokenFuncConfig from "../interfaces/GetAuthorizationTokenFuncConfig";
+import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncConfig";
+import JWTGrantTokenFuncConfig from "../interfaces/JWTGrantTokenFuncConfig";
 import RefreshTokenFuncConfig from "../interfaces/RefreshTokenFuncConfig";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
 import GrantControl from "./GrantControl";
 
-export default class PasswordGrantControl
+export default class JWTGrantControl
   extends GrantControl
   implements TokenRefreshable {
-  private options: PasswordGrantOptions;
+  private options: JWTGrantOptions;
 
-  constructor(config: OauthClientConfig, options: PasswordGrantOptions) {
+  constructor(
+    config: OauthClientConfig,
+    options: JWTGrantOptions
+  ) {
     super(config);
 
     this.options = options;
   }
 
   /**
-   * Get Password Grant Token
-   * @param params parameters
+   * Get token with the authorization code extracted in the callback uri
+   * @param params {GetAuthorizationTokenFuncConfig} parameters
    */
-  async getToken<T = any>(params: PasswordGrantFuncConfig<T>) {
+  async getToken<T = any>(params: JWTGrantTokenFuncConfig<T>) {
     // headers
     const requestHeaders: any = {};
 
     // body
     const requestBody: any = {
-      grant_type: "password",
-      username: params.username ?? this.options.username,
-      password: params.password ?? this.options.password,
-      scope: this.options.scope ? this.options.scope.join(" ") : "",
+      grant_type: params.grant_type
     };
 
     /**
      * Client authentication
      * ----------------------
      */
-    if (this.options.basicAuthHeader === false) {
-      requestBody["client_id"] = this.options.clientId;
-      requestBody["client_secret"] = this.options.clientSecret;
-    } else {
-      requestHeaders["Authorization"] = generateBasicAuthentication(
-        this.options.clientId,
-        this.options.clientSecret ?? ""
-      );
-    }
+    requestHeaders["Authorization"] = `JWT ${
+      params.jwt_token ?? this.options.jwtToken
+    }`;
 
     /**
      * Request a token
@@ -82,8 +80,10 @@ export default class PasswordGrantControl
         requestOptions: this.requestOptions,
       },
       onSuccess: (data) => {
-        // update the token
+        // this update token
         this.setToken(data);
+        // call the parent token
+        if (params.onSuccess) params.onSuccess(data);
       },
       params: params,
       token: this.token,

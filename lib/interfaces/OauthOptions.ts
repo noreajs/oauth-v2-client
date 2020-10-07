@@ -12,4 +12,5 @@ export default interface OauthOptions {
   codeVerifier?: string;
   basicAuthHeader?: boolean;
   apiBaseURL?: string;
+  jwtToken?: string;
 }

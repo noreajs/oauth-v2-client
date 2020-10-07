@@ -1,5 +1,3 @@
-import OauthClient from "./OauthClient";
-
 export {
   AuthorizationCodeGrantOptions,
   AuthorizationCodePKCEGrantOptions,
@@ -19,6 +17,9 @@ export {
   TokenRevokable,
   RevokeTokenFuncConfig,
   RequestBodyType,
+  JWTGrantOptions,
+  JWTGrantTokenFuncConfig,
+  SignFuncConfig,
 } from "./interfaces";
 
 export {
@@ -30,6 +31,7 @@ export {
   revokeToken,
   renderRequestBody,
   requestToken,
+  capitalize,
 } from "./helpers";
 
 export { default as OauthClient } from "./OauthClient";

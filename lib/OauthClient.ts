@@ -4,6 +4,7 @@ import ImplicitGrantControl from "./grant-controls/ImplicitGrantControl";
 import PasswordGrantControl from "./grant-controls/PasswordGrantControl";
 import AuthorizationCodePKCEGrantControl from "./grant-controls/AuthorizationCodePKCEGrantControl";
 import OauthClientConfig from "./interfaces/OauthClientConfig";
+import JWTGrantControl from "./grant-controls/JWTGrantControl";
 
 export default class OauthClient {
   private config: OauthClientConfig;
@@ -14,6 +15,7 @@ export default class OauthClient {
   authorizationCodePKCE: AuthorizationCodePKCEGrantControl;
   password: PasswordGrantControl;
   client: ClientCredentialsGrantControl;
+  jwt: JWTGrantControl;
 
   constructor(config: OauthClientConfig) {
     this.config = config;
@@ -85,6 +87,14 @@ export default class OauthClient {
       clientSecret: this.config.oauthOptions.clientSecret,
       scope: this.config.oauthOptions.scope,
       basicAuthHeader: this.config.oauthOptions.basicAuthHeader,
+    });
+
+    /**
+     * Jwt token
+     */
+    this.jwt = new JWTGrantControl(config, {
+      accessTokenUrl: `${this.config.oauthOptions.accessTokenUrl}`,
+      jwtToken: this.config.oauthOptions.jwtToken,
     });
   }
 }

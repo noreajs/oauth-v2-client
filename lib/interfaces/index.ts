@@ -3,6 +3,8 @@ export type { default as AuthorizationCodePKCEGrantOptions } from "./Authorizati
 export type { default as ClientCredentialsGrantOptions } from "./ClientCredentialsGrantOptions";
 export type { default as PasswordGrantOptions } from "./PasswordGrantOptions";
 export type { default as ImplicitGrantOptions } from "./ImplicitGrantOptions";
+export type { default as JWTGrantOptions } from "./JWTGrantOptions";
+export type { default as JWTGrantTokenFuncConfig } from "./JWTGrantTokenFuncConfig";
 
 export type { default as ClientCredentialsGrantFuncConfig } from "./ClientCredentialsGrantFuncConfig";
 export type { default as GetAuthorizationTokenFuncConfig } from "./GetAuthorizationTokenFuncConfig";

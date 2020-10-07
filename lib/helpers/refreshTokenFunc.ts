@@ -1,4 +1,3 @@
-import { Obj } from "@noreajs/common";
 import { requestToken } from ".";
 import {
   OauthClientConfig,
