@@ -74,64 +74,72 @@ export default class AuthorizationCodeGrantControl
    * @param params {GetAuthorizationTokenFuncConfig} parameters
    */
   async getToken<T = any>(params: GetAuthorizationTokenFuncConfig<T>) {
-    // callback url data
-    const urlData = parseUrl(params.callbackUrl);
+    try {
+      // callback url data
+      const urlData = parseUrl(params.callbackUrl);
 
-    if (urlData.query.state !== this.state) {
-      throw new Error("Corrupted answer, the state doesn't match.");
-    } else {
-      // delete the state in the answer
-      delete urlData.query.state;
-    }
-
-    if (urlData.query.code) {
-      // headers
-      const requestHeaders: any = {};
-
-      // body
-      const requestBody: any = {
-        grant_type: "authorization_code",
-        code: urlData.query.code,
-        redirect_uri: this.redirectUri,
-        state: this.state,
-      };
-
-      /**
-       * Client authentication
-       * ----------------------
-       */
-      if (this.options.basicAuthHeader === false) {
-        requestBody["client_id"] = this.options.clientId;
-        requestBody["client_secret"] = this.options.clientSecret;
+      if (urlData.query.state !== this.state) {
+        throw new Error("Corrupted answer, the state doesn't match.");
       } else {
-        requestHeaders["Authorization"] = generateBasicAuthentication(
-          this.options.clientId,
-          this.options.clientSecret ?? ""
-        );
+        // delete the state in the answer
+        delete urlData.query.state;
       }
 
-      /**
-       * Request a token
-       */
-      requestToken<T>({
-        accessTokenUrl: this.options.accessTokenUrl,
-        body: requestBody,
-        config: {
-          oauthOptions: this.oauthOptions,
-          requestOptions: this.requestOptions,
-        },
-        headers: requestHeaders,
-        onError: params.onError,
-        onSuccess: (data) => {
-          // this update token
-          this.setToken(data);
-          // call the parent token
-          if (params.onSuccess) params.onSuccess(data);
-        },
-        requestOptions: params.requestOptions,
-      });
-    } else {
-      return new Error("The code is missing in the answer.");
+      if (urlData.query.code) {
+        // headers
+        const requestHeaders: any = {};
+
+        // body
+        const requestBody: any = {
+          grant_type: "authorization_code",
+          code: urlData.query.code,
+          redirect_uri: this.redirectUri,
+          state: this.state,
+        };
+
+        /**
+         * Client authentication
+         * ----------------------
+         */
+        if (this.options.basicAuthHeader === false) {
+          requestBody["client_id"] = this.options.clientId;
+          requestBody["client_secret"] = this.options.clientSecret;
+        } else {
+          requestHeaders["Authorization"] = generateBasicAuthentication(
+            this.options.clientId,
+            this.options.clientSecret ?? ""
+          );
+        }
+
+        /**
+         * Request a token
+         */
+        requestToken<T>({
+          accessTokenUrl: this.options.accessTokenUrl,
+          body: requestBody,
+          config: {
+            oauthOptions: this.oauthOptions,
+            requestOptions: this.requestOptions,
+          },
+          headers: requestHeaders,
+          onError: params.onError,
+          onSuccess: (data) => {
+            // this update token
+            this.setToken(data);
+            // call the parent token
+            if (params.onSuccess) params.onSuccess(data);
+          },
+          requestOptions: params.requestOptions,
+        });
+      } else {
+        throw urlData.query;
+      }
+    } catch (error) {
+      if (params.onError) {
+        params.onError(error);
+      } else {
+        throw error;
+      }
     }
   }
 
