@@ -4,7 +4,7 @@ import { refreshToken, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import {
   generateCodeChallenge,
-  generateCodeVerifier
+  generateCodeVerifier,
 } from "../helpers/pkceFactory";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodePKCEGrantOptions from "../interfaces/AuthorizationCodePKCEGrantOptions";
@@ -52,17 +52,17 @@ export default class AuthorizationCodePKCEGrantControl
     // update callback url
     this.redirectUri = options?.callbackUrl ?? this.redirectUri;
 
+    // update local properties
+    this.state = options?.state ?? this.state;
+    this.options.scopes = options?.scopes ?? this.options.scopes;
+
     // query params
     const queryParams: any = {
       response_type: options?.responseType ?? "code",
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
-      state: options?.state ?? this.state,
-      scope: options?.scopes
-        ? options.scopes.join(" ")
-        : this.options.scopes
-        ? this.options.scopes.join(" ")
-        : "",
+      state: this.state,
+      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
       code_challenge: this.codeChallenge,
       code_challenge_method: this.options.codeChallengeMethod,
     };

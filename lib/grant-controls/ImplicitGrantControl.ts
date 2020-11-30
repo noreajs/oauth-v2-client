@@ -30,17 +30,17 @@ export default class ImplicitGrantControl extends GrantControl {
     // update callback url
     this.redirectUri = options?.callbackUrl ?? this.redirectUri;
 
+    // update local properties
+    this.state = options?.state ?? this.state;
+    this.options.scopes = options?.scopes ?? this.options.scopes;
+
     // query params
     const queryParams: any = {
       response_type: "token",
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
-      state: options?.state ?? this.state,
-      scope: options?.scopes
-        ? options.scopes.join(" ")
-        : this.options.scopes
-        ? this.options.scopes.join(" ")
-        : "",
+      state: this.state,
+      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
     };
 
     // merged params
