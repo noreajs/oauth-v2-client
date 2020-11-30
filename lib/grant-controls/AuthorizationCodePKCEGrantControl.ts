@@ -57,8 +57,12 @@ export default class AuthorizationCodePKCEGrantControl
       response_type: options?.responseType ?? "code",
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
-      state: this.state,
-      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
+      state: options?.state ?? this.state,
+      scope: options?.scopes
+        ? options.scopes.join(" ")
+        : this.options.scopes
+        ? this.options.scopes.join(" ")
+        : "",
       code_challenge: this.codeChallenge,
       code_challenge_method: this.options.codeChallengeMethod,
     };
@@ -94,9 +98,6 @@ export default class AuthorizationCodePKCEGrantControl
 
       if (urlData.query.state !== this.state) {
         throw new Error("Corrupted answer, the state doesn't match.");
-      } else {
-        // delete the state in the answer
-        delete urlData.query.state;
       }
 
       if (urlData.query.code) {
@@ -142,7 +143,7 @@ export default class AuthorizationCodePKCEGrantControl
             // this update token
             this.setToken(data);
             // call the parent token
-            if (params.onSuccess) params.onSuccess(data);
+            if (params.onSuccess) params.onSuccess(data, this.state);
           },
           requestOptions: params.requestOptions,
         });

@@ -35,8 +35,12 @@ export default class ImplicitGrantControl extends GrantControl {
       response_type: "token",
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
-      state: this.state,
-      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
+      state: options?.state ?? this.state,
+      scope: options?.scopes
+        ? options.scopes.join(" ")
+        : this.options.scopes
+        ? this.options.scopes.join(" ")
+        : "",
     };
 
     // merged params
@@ -69,9 +73,6 @@ export default class ImplicitGrantControl extends GrantControl {
 
     if (urlData.query.state !== this.state) {
       throw new Error("Corrupted answer, the state doesn't match.");
-    } else {
-      // delete the state in the answer
-      delete urlData.query.state;
     }
 
     // set the token
