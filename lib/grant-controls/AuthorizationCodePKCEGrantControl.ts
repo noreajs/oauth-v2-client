@@ -4,7 +4,7 @@ import { refreshToken, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import {
   generateCodeChallenge,
-  generateCodeVerifier,
+  generateCodeVerifier
 } from "../helpers/pkceFactory";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodePKCEGrantOptions from "../interfaces/AuthorizationCodePKCEGrantOptions";
