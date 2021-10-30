@@ -16,7 +16,8 @@ import GrantControl from "./GrantControl";
 
 export default class AuthorizationCodePKCEGrantControl
   extends GrantControl
-  implements TokenRefreshable {
+  implements TokenRefreshable
+{
   private options: AuthorizationCodePKCEGrantOptions;
   private state: string;
   private redirectUri: string;
@@ -97,6 +98,12 @@ export default class AuthorizationCodePKCEGrantControl
       const urlData = parseUrl(params.callbackUrl);
 
       if (urlData.query.state !== this.state) {
+        if (this.log === true || params.log === true) {
+          console.log("Corrupted answer, the state doesn't match.", {
+            urlData: urlData,
+            localState: this.state,
+          });
+        }
         throw new Error("Corrupted answer, the state doesn't match.");
       }
 

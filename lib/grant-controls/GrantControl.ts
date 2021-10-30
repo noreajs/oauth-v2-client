@@ -10,9 +10,16 @@ export default class GrantControl {
   protected requestOptions: RequestOptions;
   token?: TokenResponse;
 
+  /**
+   * Display errors in local data
+   * @default `false`
+   */
+  protected log: boolean = false;
+
   constructor(config: OauthClientConfig) {
     this.oauthOptions = config.oauthOptions;
     this.requestOptions = config.requestOptions ?? {};
+    this.log = config.log ?? false;
   }
 
   /**

@@ -72,6 +72,12 @@ export default class ImplicitGrantControl extends GrantControl {
     const urlData = parseUrl(callbackUrl);
 
     if (urlData.query.state !== this.state) {
+      if (this.log === true) {
+        console.log("Corrupted answer, the state doesn't match.", {
+          urlData: urlData,
+          localState: this.state,
+        });
+      }
       throw new Error("Corrupted answer, the state doesn't match.");
     }
 

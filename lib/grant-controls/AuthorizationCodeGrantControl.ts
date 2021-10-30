@@ -12,7 +12,8 @@ import GrantControl from "./GrantControl";
 
 export default class AuthorizationCodeGrantControl
   extends GrantControl
-  implements TokenRefreshable {
+  implements TokenRefreshable
+{
   private options: AuthorizationCodeGrantOptions;
   private state: string;
   private redirectUri: string;
@@ -83,7 +84,13 @@ export default class AuthorizationCodeGrantControl
       const urlData = parseUrl(params.callbackUrl);
 
       if (urlData.query.state !== this.state) {
-        throw new Error("Corrupted answer, the state doesn't match.");
+        if (this.log === true || params.log === true) {
+          console.log("Corrupted answer, the state doesn't match.", {
+            urlData: urlData,
+            localState: this.state,
+          });
+        }
+        throw new Error(`Corrupted answer, the state doesn't match.`);
       }
 
       if (urlData.query.code) {
