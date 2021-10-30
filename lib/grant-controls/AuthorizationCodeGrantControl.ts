@@ -41,8 +41,8 @@ export default class AuthorizationCodeGrantControl
     // update callback url
     this.redirectUri = options?.callbackUrl ?? this.redirectUri;
 
-    // update local properties
-    this.state = options?.state ?? this.state;
+    // create local properties
+    const localState = options?.state ?? this.state;
     this.options.scopes = options?.scopes ?? this.options.scopes;
 
     // query params
@@ -50,7 +50,7 @@ export default class AuthorizationCodeGrantControl
       response_type: options?.responseType ?? "code",
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
-      state: this.state,
+      state: localState,
       scope: this.options.scopes ? this.options.scopes.join(" ") : "",
     };
 
@@ -83,11 +83,14 @@ export default class AuthorizationCodeGrantControl
       // callback url data
       const urlData = parseUrl(params.callbackUrl);
 
-      if (urlData.query.state !== this.state) {
+      // local state
+      const localState = params.state ?? this.state;
+
+      if (urlData.query.state !== localState) {
         if (this.log === true || params.log === true) {
           console.log("Corrupted answer, the state doesn't match.", {
             urlData: urlData,
-            localState: this.state,
+            localState: localState,
           });
         }
         throw new Error(`Corrupted answer, the state doesn't match.`);
@@ -102,7 +105,7 @@ export default class AuthorizationCodeGrantControl
           grant_type: "authorization_code",
           code: urlData.query.code,
           redirect_uri: this.redirectUri,
-          state: this.state,
+          state: localState,
         };
 
         /**
@@ -135,7 +138,7 @@ export default class AuthorizationCodeGrantControl
             // this update token
             this.setToken(data);
             // call the parent token
-            if (params.onSuccess) params.onSuccess(data, this.state);
+            if (params.onSuccess) params.onSuccess(data, localState);
           },
           requestOptions: params.requestOptions,
         });

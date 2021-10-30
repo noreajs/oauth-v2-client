@@ -30,8 +30,8 @@ export default class ImplicitGrantControl extends GrantControl {
     // update callback url
     this.redirectUri = options?.callbackUrl ?? this.redirectUri;
 
-    // update local properties
-    this.state = options?.state ?? this.state;
+    // create local properties
+    const localState = options?.state ?? this.state;
     this.options.scopes = options?.scopes ?? this.options.scopes;
 
     // query params
@@ -39,7 +39,7 @@ export default class ImplicitGrantControl extends GrantControl {
       response_type: "token",
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
-      state: this.state,
+      state: localState,
       scope: this.options.scopes ? this.options.scopes.join(" ") : "",
     };
 
@@ -66,16 +66,20 @@ export default class ImplicitGrantControl extends GrantControl {
   /**
    * Extract the token within the callback uri
    * @param callbackUrl the full callback uri
+   * @param state state
    */
-  getToken<T = any>(callbackUrl: string): T {
+  getToken<T = any>(callbackUrl: string, state?: string): T {
     // callback url data
     const urlData = parseUrl(callbackUrl);
 
-    if (urlData.query.state !== this.state) {
+    // local state
+    const localState = state ?? this.state;
+
+    if (urlData.query.state !== localState) {
       if (this.log === true) {
         console.log("Corrupted answer, the state doesn't match.", {
           urlData: urlData,
-          localState: this.state,
+          localState: localState,
         });
       }
       throw new Error("Corrupted answer, the state doesn't match.");

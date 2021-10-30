@@ -53,8 +53,8 @@ export default class AuthorizationCodePKCEGrantControl
     // update callback url
     this.redirectUri = options?.callbackUrl ?? this.redirectUri;
 
-    // update local properties
-    this.state = options?.state ?? this.state;
+    // create local properties
+    const localState = options?.state ?? this.state;
     this.options.scopes = options?.scopes ?? this.options.scopes;
 
     // query params
@@ -62,7 +62,7 @@ export default class AuthorizationCodePKCEGrantControl
       response_type: options?.responseType ?? "code",
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
-      state: this.state,
+      state: localState,
       scope: this.options.scopes ? this.options.scopes.join(" ") : "",
       code_challenge: this.codeChallenge,
       code_challenge_method: this.options.codeChallengeMethod,
@@ -97,11 +97,14 @@ export default class AuthorizationCodePKCEGrantControl
       // callback url data
       const urlData = parseUrl(params.callbackUrl);
 
-      if (urlData.query.state !== this.state) {
+      // create local state
+      const localState = params.state ?? this.state;
+
+      if (urlData.query.state !== localState) {
         if (this.log === true || params.log === true) {
           console.log("Corrupted answer, the state doesn't match.", {
             urlData: urlData,
-            localState: this.state,
+            localState: localState,
           });
         }
         throw new Error("Corrupted answer, the state doesn't match.");
@@ -115,7 +118,7 @@ export default class AuthorizationCodePKCEGrantControl
         const requestBody: any = {
           grant_type: "authorization_code",
           code: urlData.query.code,
-          state: this.state,
+          state: localState,
           redirect_uri: this.redirectUri,
           code_verifier: this.codeVerifier,
         };
@@ -150,7 +153,7 @@ export default class AuthorizationCodePKCEGrantControl
             // this update token
             this.setToken(data);
             // call the parent token
-            if (params.onSuccess) params.onSuccess(data, this.state);
+            if (params.onSuccess) params.onSuccess(data, localState);
           },
           requestOptions: params.requestOptions,
         });
