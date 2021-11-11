@@ -5,7 +5,7 @@ export default interface OauthOptions {
   clientId: string;
   clientSecret?: string;
   scopes?: Array<string>;
-  state?: string;
+  state?: string | string[];
   username?: string;
   password?: string;
   codeChallengeMethod?: "S256" | "plain";

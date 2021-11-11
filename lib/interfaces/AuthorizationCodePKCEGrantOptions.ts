@@ -5,7 +5,7 @@ export default interface AuthorizationCodePKCEGrantOptions {
   clientId: string;
   clientSecret?: string;
   scopes?: Array<string>;
-  state?: string;
+  state?: string | string[];
   codeChallengeMethod: "S256" | "plain";
   codeVerifier?: string;
   basicAuthHeader?: boolean;

@@ -19,7 +19,7 @@ export default class AuthorizationCodePKCEGrantControl
   implements TokenRefreshable
 {
   private options: AuthorizationCodePKCEGrantOptions;
-  private state: string;
+  private state: string | string[];
   private redirectUri: string;
   private codeVerifier: string;
   private codeChallenge: string;
@@ -98,9 +98,19 @@ export default class AuthorizationCodePKCEGrantControl
       const urlData = parseUrl(params.callbackUrl);
 
       // create local state
-      const localState = params.state ?? this.state;
+      let localState = params.state ?? this.state;
 
-      if (urlData.query.state !== localState) {
+      // force array
+      if (
+        localState !== null &&
+        localState !== undefined &&
+        !Array.isArray(localState)
+      ) {
+        localState = [localState];
+      }
+
+      // state exists
+      if (!localState.includes(urlData.query.state as string)) {
         if (this.log === true || params.log === true) {
           console.log("Corrupted answer, the state doesn't match.", {
             urlData: urlData,
@@ -153,7 +163,8 @@ export default class AuthorizationCodePKCEGrantControl
             // this update token
             this.setToken(data);
             // call the parent token
-            if (params.onSuccess) params.onSuccess(data, localState);
+            if (params.onSuccess)
+              params.onSuccess(data, urlData.query.state as string);
           },
           requestOptions: params.requestOptions,
         });
