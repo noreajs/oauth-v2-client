@@ -15,7 +15,7 @@ export default class AuthorizationCodeGrantControl
   implements TokenRefreshable
 {
   private options: AuthorizationCodeGrantOptions;
-  private state: string | string[];
+  private state?: string | string[];
   private redirectUri: string;
 
   constructor(
@@ -30,7 +30,10 @@ export default class AuthorizationCodeGrantControl
     this.redirectUri = this.options.callbackUrl;
 
     // state generation
-    this.state = this.options.state ?? Math.random().toString(36);
+    this.state =
+      this.options.state ?? config.oauthOptions.defaultSecurity === true
+        ? Math.random().toString(36)
+        : undefined;
   }
 
   /**

@@ -19,10 +19,10 @@ export default class AuthorizationCodePKCEGrantControl
   implements TokenRefreshable
 {
   private options: AuthorizationCodePKCEGrantOptions;
-  private state: string | string[];
+  private state?: string | string[];
   private redirectUri: string;
-  private codeVerifier: string;
-  private codeChallenge: string;
+  private codeVerifier?: string;
+  private codeChallenge?: string;
 
   constructor(
     config: OauthClientConfig,
@@ -36,13 +36,22 @@ export default class AuthorizationCodePKCEGrantControl
     this.redirectUri = this.options.callbackUrl;
 
     // state generation
-    this.state = this.options.state ?? Math.random().toString(36);
+    this.state =
+      this.options.state ?? config.oauthOptions.defaultSecurity === true
+        ? Math.random().toString(36)
+        : undefined;
 
     // code verifier
-    this.codeVerifier = this.options.codeVerifier ?? generateCodeVerifier();
+    this.codeVerifier =
+      this.options.codeVerifier ?? config.oauthOptions.defaultSecurity === true
+        ? generateCodeVerifier()
+        : undefined;
 
     // code challenge
-    this.codeChallenge = generateCodeChallenge(this.codeVerifier);
+    this.codeChallenge =
+      this.codeVerifier && config.oauthOptions.defaultSecurity === true
+        ? generateCodeChallenge(this.codeVerifier)
+        : undefined;
   }
 
   /**
