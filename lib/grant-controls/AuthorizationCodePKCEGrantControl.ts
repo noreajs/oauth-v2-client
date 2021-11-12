@@ -101,11 +101,9 @@ export default class AuthorizationCodePKCEGrantControl
       let localState = params.state ?? this.state;
 
       // force array
-      if (
-        localState !== null &&
-        localState !== undefined &&
-        !Array.isArray(localState)
-      ) {
+      if (localState === null || localState === undefined) {
+        localState = [];
+      } else if (!Array.isArray(localState)) {
         localState = [localState];
       }
 

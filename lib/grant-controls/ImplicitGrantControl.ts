@@ -76,11 +76,9 @@ export default class ImplicitGrantControl extends GrantControl {
     let localState = state ?? this.state;
 
     // force array
-    if (
-      localState !== null &&
-      localState !== undefined &&
-      !Array.isArray(localState)
-    ) {
+    if (localState === null || localState === undefined) {
+      localState = [];
+    } else if (!Array.isArray(localState)) {
       localState = [localState];
     }
 
