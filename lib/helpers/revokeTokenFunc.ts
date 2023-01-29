@@ -48,7 +48,7 @@ export default async function revokeToken<T = any>(props: TokenRequestType<T> & 
     /**
      * Request a token
      */
-    requestToken<T>({
+    await requestToken<T>({
       accessTokenUrl: props.accessTokenUrl,
       body: requestBody,
       config: props.config,

@@ -50,7 +50,7 @@ export default async function refreshToken<T = any>(props: {
     /**
      * Request a token
      */
-    requestToken<T>({
+    await requestToken<T>({
       accessTokenUrl: props.accessTokenUrl,
       body: requestBody,
       config: props.config,

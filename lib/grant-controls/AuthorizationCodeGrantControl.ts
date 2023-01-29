@@ -12,8 +12,7 @@ import GrantControl from "./GrantControl";
 
 export default class AuthorizationCodeGrantControl
   extends GrantControl
-  implements TokenRefreshable
-{
+  implements TokenRefreshable {
   private options: AuthorizationCodeGrantOptions;
   private state?: string | string[];
   private redirectUri: string;
@@ -137,7 +136,7 @@ export default class AuthorizationCodeGrantControl
         /**
          * Request a token
          */
-        requestToken<T>({
+        await requestToken<T>({
           accessTokenUrl: this.options.accessTokenUrl,
           body: requestBody,
           config: {
@@ -172,7 +171,7 @@ export default class AuthorizationCodeGrantControl
    * @param params parameters
    */
   async refresh<T = any>(params: RefreshTokenFuncConfig<T>) {
-    refreshToken<T>({
+    await refreshToken<T>({
       accessTokenUrl: this.options.accessTokenUrl,
       config: {
         oauthOptions: this.oauthOptions,

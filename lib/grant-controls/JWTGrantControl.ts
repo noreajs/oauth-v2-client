@@ -49,7 +49,7 @@ export default class JWTGrantControl
     /**
      * Request a token
      */
-    requestToken<T>({
+    await requestToken<T>({
       accessTokenUrl: this.options.accessTokenUrl,
       body: requestBody,
       config: {
@@ -73,7 +73,7 @@ export default class JWTGrantControl
    * @param params parameters
    */
   async refresh<T = any>(params: RefreshTokenFuncConfig<T>) {
-    refreshToken<T>({
+    await refreshToken<T>({
       accessTokenUrl: this.options.accessTokenUrl,
       config: {
         oauthOptions: this.oauthOptions,
