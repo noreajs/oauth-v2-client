@@ -146,13 +146,12 @@ export default class AuthorizationCodeGrantControl
           headers: requestHeaders,
           onError: params.onError,
           onSuccess: (data) => {
-            // this update token
-            this.setToken(data);
             // call the parent token
             if (params.onSuccess)
               params.onSuccess(data, urlData.query.state as string);
           },
           requestOptions: params.requestOptions,
+          log: params.log
         });
       } else {
         throw urlData.query;
@@ -178,13 +177,10 @@ export default class AuthorizationCodeGrantControl
         requestOptions: this.requestOptions,
       },
       onSuccess: (data) => {
-        // this update token
-        this.setToken(data);
         // call the parent token
         if (params.onSuccess) params.onSuccess(data);
       },
-      params: params,
-      token: this.token,
+      params: params
     });
   }
 }

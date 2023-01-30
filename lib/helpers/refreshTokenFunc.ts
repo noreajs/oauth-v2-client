@@ -1,8 +1,7 @@
 import { requestToken } from ".";
 import {
   OauthClientConfig,
-  RefreshTokenFuncConfig,
-  TokenResponse,
+  RefreshTokenFuncConfig
 } from "../interfaces";
 import generateBasicAuthentication from "./basicAuthFunc";
 
@@ -13,21 +12,20 @@ import generateBasicAuthentication from "./basicAuthFunc";
 export default async function refreshToken<T = any>(props: {
   params: RefreshTokenFuncConfig<T>;
   accessTokenUrl: string;
-  token?: TokenResponse;
   config: OauthClientConfig;
   onSuccess: (data: any) => void;
 }) {
   /**
    * Only if refresh_token is available
    */
-  if (props.token?.refresh_token) {
+  if (props.params.token.refresh_token) {
     // headers
     const requestHeaders: any = {};
 
     // body
     const requestBody: any = {
       grant_type: "refresh_token",
-      refresh_token: props.token?.refresh_token,
+      refresh_token: props.params.token.refresh_token,
       scope: props.config.oauthOptions.scopes
         ? props.config.oauthOptions.scopes.join(" ")
         : "",
@@ -63,6 +61,7 @@ export default async function refreshToken<T = any>(props: {
         if (props.params.onSuccess) props.params.onSuccess(data);
       },
       requestOptions: props.params.requestOptions,
+      log: props.params.log
     });
   } else {
     throw new Error("Refresh token is required");

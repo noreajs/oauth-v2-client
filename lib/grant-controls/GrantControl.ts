@@ -8,7 +8,6 @@ import { capitalize } from "../helpers";
 export default class GrantControl {
   protected oauthOptions: OauthOptions;
   protected requestOptions: RequestOptions;
-  token?: TokenResponse;
 
   /**
    * Display errors in local data
@@ -23,23 +22,10 @@ export default class GrantControl {
   }
 
   /**
-   * Setting the token data
-   * @param data token data
-   */
-  setToken(data: any) {
-    this.token = data;
-  }
-
-  /**
    * Sign axios request config
    * @param options parameters
    */
-  sign(options?: SignFuncConfig): AxiosRequestConfig {
-    // Missing token
-    if (!this.token) {
-      console.error("Oauth V2 Client: Token is missing.");
-    }
-
+  sign(options: SignFuncConfig): AxiosRequestConfig {
     // initial config
     let initialConfig: AxiosRequestConfig = {
       baseURL: this.oauthOptions.apiBaseURL,
@@ -49,18 +35,18 @@ export default class GrantControl {
     // proxy
     if (options?.proxy) {
       initialConfig.headers["Proxy-Authorization"] = `${capitalize(
-        options.token_type ?? this.token?.token_type
-      )} ${this.token?.access_token}`;
+        options.token.token_type
+      )} ${options.token.access_token}`;
     } else {
       initialConfig.headers["Authorization"] = `${capitalize(
-        options?.token_type ?? this.token?.token_type
-      )} ${this.token?.access_token}`;
+        options.token.token_type
+      )} ${options.token.access_token}`;
     }
 
     // sign function config
     const config = Obj.extend<SignFuncConfig>({
       data: options,
-      omits: ["proxy", "token_type"],
+      omits: ["proxy", "token"],
     });
 
     return Obj.mergeNested({

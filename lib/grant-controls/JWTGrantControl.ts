@@ -1,11 +1,7 @@
-import { Obj } from "@noreajs/common";
-import { parseUrl } from "query-string";
 import { refreshToken, requestToken } from "../helpers";
-import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import { OauthClientConfig } from "../interfaces";
-import JWTGrantOptions from "../interfaces/JWTGrantOptions";
 import GetAuthorizationTokenFuncConfig from "../interfaces/GetAuthorizationTokenFuncConfig";
-import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncConfig";
+import JWTGrantOptions from "../interfaces/JWTGrantOptions";
 import JWTGrantTokenFuncConfig from "../interfaces/JWTGrantTokenFuncConfig";
 import RefreshTokenFuncConfig from "../interfaces/RefreshTokenFuncConfig";
 import TokenRefreshable from "../interfaces/TokenRefreshable";
@@ -42,9 +38,8 @@ export default class JWTGrantControl
      * Client authentication
      * ----------------------
      */
-    requestHeaders["Authorization"] = `JWT ${
-      params.jwt_token ?? this.options.jwtToken
-    }`;
+    requestHeaders["Authorization"] = `JWT ${params.jwt_token ?? this.options.jwtToken
+      }`;
 
     /**
      * Request a token
@@ -59,8 +54,6 @@ export default class JWTGrantControl
       headers: requestHeaders,
       onError: params.onError,
       onSuccess: (data) => {
-        // this update token
-        this.setToken(data);
         // call the parent token
         if (params.onSuccess) params.onSuccess(data);
       },
@@ -80,13 +73,10 @@ export default class JWTGrantControl
         requestOptions: this.requestOptions,
       },
       onSuccess: (data) => {
-        // this update token
-        this.setToken(data);
         // call the parent token
         if (params.onSuccess) params.onSuccess(data);
       },
-      params: params,
-      token: this.token,
+      params: params
     });
   }
 }

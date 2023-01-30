@@ -62,8 +62,6 @@ export default class ClientCredentialsGrantControl
       headers: requestHeaders,
       onError: params.onError,
       onSuccess: (data) => {
-        // this update token
-        this.setToken(data);
         // call the parent token
         if (params.onSuccess) params.onSuccess(data);
       },
@@ -84,10 +82,9 @@ export default class ClientCredentialsGrantControl
       },
       onSuccess: (data) => {
         // update the token
-        this.setToken(data);
+        if (params.onSuccess) params.onSuccess(data);
       },
-      params: params,
-      token: this.token,
+      params: params
     });
   }
 }

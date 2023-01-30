@@ -445,7 +445,7 @@ httpServer.listen(3000);
 
 
 
-## Sign & Restore
+## Sign
 
 ### Sign API requests
 
@@ -454,15 +454,20 @@ For all grants, there is a method call **sign** which help to sign Axios request
 `Sign` method takes an object as a unique parameter which has all **AxiosRequestConfig** properties, and those 2 additional properties:
 
 - **proxy**: *Use `Proxy-Authorization` instead of `Authorization`*
-- **token_type**: *By default, the first letter of the token type is uppercase. This property is used to override the default token type.*
+- **token**: *Token object with the following properties: access_token, token_type.*
 
 
 
 Example with authorization code *(Node.Js +  Typescript)*
 
 ```typescript
+// get the saved token
+const token = {};
+
 // using http helper (get, post, put etc)
-await Axios.get("/2.0/user/emails", api.authorizationCode.sign()).then((response) => {
+await Axios.get("/2.0/user/emails", api.authorizationCode.sign({
+  token
+})).then((response) => {
       return res.status(200).json(response.data);
 }).catch((error) => {
       return res.status(500).json(error);
@@ -470,6 +475,7 @@ await Axios.get("/2.0/user/emails", api.authorizationCode.sign()).then((response
 
 // using custom request
 await Axios.request(api.authorizationCode.sign({
+    token,
     method: "get",
     url: "/2.0/user/emails"
 })).then((response) => {
@@ -478,22 +484,6 @@ await Axios.request(api.authorizationCode.sign({
       return res.status(500).json(error);
 });
 ```
-
-
-
-### Restore Token
-
-Very often you may need to save the token for later use. There is a method that allows you to restore the token and perform your operations. This method is called **setToken**.
-
-
-
-Example with authorization code *(Node.Js +  Typescript)*
-
-```typescript
-api.authorizationCode.setToken(token_data)
-```
-
-
 
 ### Licence
 

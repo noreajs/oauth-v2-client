@@ -61,8 +61,6 @@ export default class PasswordGrantControl
       headers: requestHeaders,
       onError: params.onError,
       onSuccess: (data) => {
-        // this update token
-        this.setToken(data);
         // call the parent token
         if (params.onSuccess) params.onSuccess(data);
       },
@@ -83,10 +81,9 @@ export default class PasswordGrantControl
       },
       onSuccess: (data) => {
         // update the token
-        this.setToken(data);
+        if (params.onSuccess) params.onSuccess(data);
       },
-      params: params,
-      token: this.token,
+      params: params
     });
   }
 }

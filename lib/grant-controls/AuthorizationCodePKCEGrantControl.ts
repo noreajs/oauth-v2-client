@@ -4,7 +4,7 @@ import { refreshToken, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import {
   generateCodeChallenge,
-  generateCodeVerifier,
+  generateCodeVerifier
 } from "../helpers/pkceFactory";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodePKCEGrantOptions from "../interfaces/AuthorizationCodePKCEGrantOptions";
@@ -16,8 +16,7 @@ import GrantControl from "./GrantControl";
 
 export default class AuthorizationCodePKCEGrantControl
   extends GrantControl
-  implements TokenRefreshable
-{
+  implements TokenRefreshable {
   private options: AuthorizationCodePKCEGrantOptions;
   private state?: string | string[];
   private redirectUri: string;
@@ -167,13 +166,11 @@ export default class AuthorizationCodePKCEGrantControl
           headers: requestHeaders,
           onError: params.onError,
           onSuccess: (data) => {
-            // this update token
-            this.setToken(data);
             // call the parent token
             if (params.onSuccess)
               params.onSuccess(data, urlData.query.state as string);
           },
-          requestOptions: params.requestOptions,
+          requestOptions: params.requestOptions
         });
       } else {
         throw urlData.query;
@@ -200,10 +197,9 @@ export default class AuthorizationCodePKCEGrantControl
       },
       onSuccess: (data) => {
         // this update token
-        this.setToken(data);
+        if (params.onSuccess) params.onSuccess(data);
       },
-      params: params,
-      token: this.token,
+      params: params
     });
   }
 }

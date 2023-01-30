@@ -96,9 +96,6 @@ export default class ImplicitGrantControl extends GrantControl {
       throw new Error("Corrupted answer, the state doesn't match.");
     }
 
-    // set the token
-    this.setToken(urlData.query);
-
     return urlData.query as any;
   }
 }
