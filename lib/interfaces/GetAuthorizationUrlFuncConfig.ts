@@ -1,5 +1,4 @@
 type GetAuthorizationUrlFuncConfig = {
-  callbackUrl: string;
   responseType?: string;
   state?: string;
   scopes?: string[];

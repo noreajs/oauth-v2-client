@@ -13,11 +13,4 @@ export default interface OauthOptions {
   basicAuthHeader?: boolean;
   apiBaseURL?: string;
   jwtToken?: string;
-
-  /**
-   * Generate state, codeVerifier, codeChallenge when empty
-   *
-   * @default `false`
-   */
-  defaultSecurity?: boolean;
 }

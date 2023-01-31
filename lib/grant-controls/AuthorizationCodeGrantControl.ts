@@ -29,10 +29,7 @@ export default class AuthorizationCodeGrantControl
     this.redirectUri = this.options.callbackUrl;
 
     // state generation
-    this.state =
-      this.options.state ?? config.oauthOptions.defaultSecurity === true
-        ? Math.random().toString(36)
-        : undefined;
+    this.state = this.options.state;
   }
 
   /**
@@ -40,12 +37,9 @@ export default class AuthorizationCodeGrantControl
    * @param {GetAuthorizationUriFuncType} options redirect uri, response type
    */
   getAuthUri(options?: GetAuthorizationUriFuncType) {
-    // update callback url
-    this.redirectUri = options?.callbackUrl ?? this.redirectUri;
-
     // create local properties
     const localState = options?.state ?? this.state;
-    this.options.scopes = options?.scopes ?? this.options.scopes;
+    const localScopes = options?.scopes ?? this.options.scopes;
 
     // query params
     const queryParams: any = {
@@ -53,14 +47,14 @@ export default class AuthorizationCodeGrantControl
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
       state: localState,
-      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
+      scope: localScopes ? localScopes.join(" ") : "",
     };
 
     // merged params
-    const mergedParams = Obj.merge(
+    const mergedParams = Obj.cleanWithEmpty(Obj.merge(
       queryParams,
       this.requestOptions.query ?? {}
-    );
+    ));
 
     // constructing the request
     const url = new URL(this.options.authUrl);
@@ -96,8 +90,7 @@ export default class AuthorizationCodeGrantControl
       }
 
       // state exists
-
-      if (!localState.includes(urlData.query.state as string)) {
+      if (urlData.query.state && !localState.includes(urlData.query.state as string)) {
         if (this.log === true || params.log === true) {
           console.log("Corrupted answer, the state doesn't match.", {
             urlData: urlData,

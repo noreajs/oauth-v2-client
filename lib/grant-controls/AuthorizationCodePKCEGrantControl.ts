@@ -3,8 +3,7 @@ import { parseUrl } from "query-string";
 import { refreshToken, requestToken } from "../helpers";
 import generateBasicAuthentication from "../helpers/basicAuthFunc";
 import {
-  generateCodeChallenge,
-  generateCodeVerifier
+  generateCodeChallenge
 } from "../helpers/pkceFactory";
 import { OauthClientConfig } from "../interfaces";
 import AuthorizationCodePKCEGrantOptions from "../interfaces/AuthorizationCodePKCEGrantOptions";
@@ -21,7 +20,6 @@ export default class AuthorizationCodePKCEGrantControl
   private state?: string | string[];
   private redirectUri: string;
   private codeVerifier?: string;
-  private codeChallenge?: string;
 
   constructor(
     config: OauthClientConfig,
@@ -35,35 +33,28 @@ export default class AuthorizationCodePKCEGrantControl
     this.redirectUri = this.options.callbackUrl;
 
     // state generation
-    this.state =
-      this.options.state ?? config.oauthOptions.defaultSecurity === true
-        ? Math.random().toString(36)
-        : undefined;
+    this.state = this.options.state;
 
     // code verifier
-    this.codeVerifier =
-      this.options.codeVerifier ?? config.oauthOptions.defaultSecurity === true
-        ? generateCodeVerifier()
-        : undefined;
+    this.codeVerifier = this.options.codeVerifier;
 
-    // code challenge
-    this.codeChallenge =
-      this.codeVerifier && config.oauthOptions.defaultSecurity === true
-        ? generateCodeChallenge(this.codeVerifier)
-        : undefined;
+
   }
 
   /**
    * Get authentication url
    * @param {GetAuthorizationUrlFuncConfig} options redirect uri, response type
    */
-  getAuthUri(options?: GetAuthorizationUrlFuncConfig) {
-    // update callback url
-    this.redirectUri = options?.callbackUrl ?? this.redirectUri;
-
+  getAuthUri(options?: GetAuthorizationUrlFuncConfig & {
+    codeVerifier?: string,
+    codeChallengeMethod?: "S256" | "plain"
+  }) {
     // create local properties
     const localState = options?.state ?? this.state;
-    this.options.scopes = options?.scopes ?? this.options.scopes;
+    const localCodeVerifier = options?.codeVerifier ?? this.codeVerifier;
+    const localCodeChallengeMethod = options?.codeChallengeMethod ?? this.options.codeChallengeMethod;
+    const localCodeChallenge = localCodeVerifier ? generateCodeChallenge(localCodeVerifier) : undefined;
+    const localScopes = options?.scopes ?? this.options.scopes;
 
     // query params
     const queryParams: any = {
@@ -71,16 +62,16 @@ export default class AuthorizationCodePKCEGrantControl
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
       state: localState,
-      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
-      code_challenge: this.codeChallenge,
-      code_challenge_method: this.options.codeChallengeMethod,
+      scope: localScopes ? localScopes.join(" ") : "",
+      code_challenge: localCodeChallenge,
+      code_challenge_method: localCodeChallengeMethod,
     };
 
     // merged params
-    const mergedParams = Obj.merge(
+    const mergedParams = Obj.cleanWithEmpty(Obj.merge(
       queryParams,
       this.requestOptions.query ?? {}
-    );
+    ));
 
     // constructing the request
     const url = new URL(this.options.authUrl);
@@ -100,13 +91,17 @@ export default class AuthorizationCodePKCEGrantControl
    * Get token with the authorization code extracted in the callback uri
    * @param params {GetAuthorizationTokenFuncConfig} parameters
    */
-  async getToken<T = any>(params: GetAuthorizationTokenFuncConfig<T>) {
+  async getToken<T = any>(params: GetAuthorizationTokenFuncConfig<T> & {
+    codeVerifier?: string,
+    codeChallengeMethod?: "S256" | "plain"
+  }) {
     try {
       // callback url data
       const urlData = parseUrl(params.callbackUrl);
 
       // create local state
       let localState = params.state ?? this.state;
+      let localCodeVerifier = params.codeVerifier ?? this.codeVerifier;
 
       // force array
       if (localState === null || localState === undefined) {
@@ -116,7 +111,7 @@ export default class AuthorizationCodePKCEGrantControl
       }
 
       // state exists
-      if (!localState.includes(urlData.query.state as string)) {
+      if (urlData.query.state && !localState.includes(urlData.query.state as string)) {
         if (this.log === true || params.log === true) {
           console.log("Corrupted answer, the state doesn't match.", {
             urlData: urlData,
@@ -136,7 +131,7 @@ export default class AuthorizationCodePKCEGrantControl
           code: urlData.query.code,
           state: localState,
           redirect_uri: this.redirectUri,
-          code_verifier: this.codeVerifier,
+          code_verifier: localCodeVerifier,
         };
 
         /**

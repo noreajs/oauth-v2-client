@@ -1,9 +1,9 @@
+import { Obj } from "@noreajs/common";
+import { parseUrl } from "query-string";
+import { OauthClientConfig } from "../interfaces";
+import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncConfig";
 import ImplicitGrantOptions from "../interfaces/ImplicitGrantOptions";
 import GrantControl from "./GrantControl";
-import { parseUrl } from "query-string";
-import { Arr, Obj } from "@noreajs/common";
-import GetAuthorizationUriFuncType from "../interfaces/GetAuthorizationUrlFuncConfig";
-import { OauthClientConfig } from "../interfaces";
 
 export default class ImplicitGrantControl extends GrantControl {
   private options: ImplicitGrantOptions;
@@ -19,10 +19,7 @@ export default class ImplicitGrantControl extends GrantControl {
     this.redirectUri = this.options.callbackUrl;
 
     // state generation
-    this.state =
-      this.options.state ?? config.oauthOptions.defaultSecurity === true
-        ? Math.random().toString(36)
-        : undefined;
+    this.state = this.options.state;
   }
 
   /**
@@ -30,12 +27,9 @@ export default class ImplicitGrantControl extends GrantControl {
    * @param {GetAuthorizationUriFuncType} options redirect uri, response type
    */
   getAuthUri(options?: GetAuthorizationUriFuncType) {
-    // update callback url
-    this.redirectUri = options?.callbackUrl ?? this.redirectUri;
-
     // create local properties
     const localState = options?.state ?? this.state;
-    this.options.scopes = options?.scopes ?? this.options.scopes;
+    const localScopes = options?.scopes ?? this.options.scopes;
 
     // query params
     const queryParams: any = {
@@ -43,7 +37,7 @@ export default class ImplicitGrantControl extends GrantControl {
       redirect_uri: this.redirectUri,
       client_id: this.options.clientId,
       state: localState,
-      scope: this.options.scopes ? this.options.scopes.join(" ") : "",
+      scope: localScopes ? localScopes.join(" ") : "",
     };
 
     // merged params
@@ -86,7 +80,7 @@ export default class ImplicitGrantControl extends GrantControl {
     }
 
     // state exists
-    if (!localState.includes(urlData.query.state as string)) {
+    if (urlData.query.state && !localState.includes(urlData.query.state as string)) {
       if (this.log === true) {
         console.log("Corrupted answer, the state doesn't match.", {
           urlData: urlData,
