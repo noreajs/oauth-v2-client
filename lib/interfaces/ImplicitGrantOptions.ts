@@ -3,6 +3,5 @@ export default interface ImplicitGrantOptions {
   authUrl: string;
   clientId: string;
   scopes?: Array<string>;
-  state?: string | string[];
   basicAuthHeader?: boolean;
 }

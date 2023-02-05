@@ -7,7 +7,6 @@ import GrantControl from "./GrantControl";
 
 export default class ImplicitGrantControl extends GrantControl {
   private options: ImplicitGrantOptions;
-  private state?: string | string[];
   private redirectUri: string;
 
   constructor(config: OauthClientConfig, options: ImplicitGrantOptions) {
@@ -17,9 +16,6 @@ export default class ImplicitGrantControl extends GrantControl {
 
     // callback url
     this.redirectUri = this.options.callbackUrl;
-
-    // state generation
-    this.state = this.options.state;
   }
 
   /**
@@ -28,7 +24,7 @@ export default class ImplicitGrantControl extends GrantControl {
    */
   getAuthUri(options?: GetAuthorizationUriFuncType) {
     // create local properties
-    const localState = options?.state ?? this.state;
+    const localState = options?.state;
     const localScopes = options?.scopes ?? this.options.scopes;
 
     // query params
@@ -70,7 +66,7 @@ export default class ImplicitGrantControl extends GrantControl {
     const urlData = parseUrl(callbackUrl);
 
     // local state
-    let localState = state ?? this.state;
+    let localState = state;
 
     // force array
     if (localState === null || localState === undefined) {

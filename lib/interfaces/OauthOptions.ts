@@ -5,11 +5,9 @@ export default interface OauthOptions {
   clientId: string;
   clientSecret?: string;
   scopes?: Array<string>;
-  state?: string | string[];
   username?: string;
   password?: string;
   codeChallengeMethod?: "S256" | "plain";
-  codeVerifier?: string;
   basicAuthHeader?: boolean;
   apiBaseURL?: string;
   jwtToken?: string;

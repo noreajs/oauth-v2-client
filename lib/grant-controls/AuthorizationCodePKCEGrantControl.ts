@@ -17,9 +17,7 @@ export default class AuthorizationCodePKCEGrantControl
   extends GrantControl
   implements TokenRefreshable {
   private options: AuthorizationCodePKCEGrantOptions;
-  private state?: string | string[];
   private redirectUri: string;
-  private codeVerifier?: string;
 
   constructor(
     config: OauthClientConfig,
@@ -31,14 +29,6 @@ export default class AuthorizationCodePKCEGrantControl
 
     // callback url
     this.redirectUri = this.options.callbackUrl;
-
-    // state generation
-    this.state = this.options.state;
-
-    // code verifier
-    this.codeVerifier = this.options.codeVerifier;
-
-
   }
 
   /**
@@ -50,8 +40,8 @@ export default class AuthorizationCodePKCEGrantControl
     codeChallengeMethod?: "S256" | "plain"
   }) {
     // create local properties
-    const localState = options?.state ?? this.state;
-    const localCodeVerifier = options?.codeVerifier ?? this.codeVerifier;
+    const localState = options?.state;
+    const localCodeVerifier = options?.codeVerifier;
     const localCodeChallengeMethod = options?.codeChallengeMethod ?? this.options.codeChallengeMethod;
     const localCodeChallenge = localCodeVerifier ? generateCodeChallenge(localCodeVerifier) : undefined;
     const localScopes = options?.scopes ?? this.options.scopes;
@@ -100,8 +90,8 @@ export default class AuthorizationCodePKCEGrantControl
       const urlData = parseUrl(params.callbackUrl);
 
       // create local state
-      let localState = params.state ?? this.state;
-      let localCodeVerifier = params.codeVerifier ?? this.codeVerifier;
+      let localState = params.state;
+      let localCodeVerifier = params.codeVerifier;
 
       // force array
       if (localState === null || localState === undefined) {

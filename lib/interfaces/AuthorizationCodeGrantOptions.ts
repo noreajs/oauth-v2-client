@@ -5,6 +5,5 @@ export default interface AuthorizationCodeGrantOptions {
   clientId: string;
   clientSecret?: string;
   scopes?: Array<string>;
-  state?: string | string[];
   basicAuthHeader?: boolean;
 }

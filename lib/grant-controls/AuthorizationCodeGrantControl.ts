@@ -14,7 +14,6 @@ export default class AuthorizationCodeGrantControl
   extends GrantControl
   implements TokenRefreshable {
   private options: AuthorizationCodeGrantOptions;
-  private state?: string | string[];
   private redirectUri: string;
 
   constructor(
@@ -27,9 +26,6 @@ export default class AuthorizationCodeGrantControl
 
     // callback url
     this.redirectUri = this.options.callbackUrl;
-
-    // state generation
-    this.state = this.options.state;
   }
 
   /**
@@ -38,7 +34,7 @@ export default class AuthorizationCodeGrantControl
    */
   getAuthUri(options?: GetAuthorizationUriFuncType) {
     // create local properties
-    const localState = options?.state ?? this.state;
+    const localState = options?.state;
     const localScopes = options?.scopes ?? this.options.scopes;
 
     // query params
@@ -80,7 +76,7 @@ export default class AuthorizationCodeGrantControl
       const urlData = parseUrl(params.callbackUrl);
 
       // local state
-      let localState = params.state ?? this.state;
+      let localState = params.state;
 
       // force array
       if (localState === null || localState === undefined) {
