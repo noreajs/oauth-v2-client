@@ -76,9 +76,11 @@ export default class AuthorizationCodeGrantControl
       // callback url data
       const urlData = parseUrl(params.callbackUrl);
 
+      const url = new URL(params.callbackUrl)
+
       // local state
       let localState = params.state;
-      const localRedirectUrl = params?.redirectUri ?? this.redirectUri;
+      const localRedirectUrl = `${url.origin}${url.pathname}`;
 
       // force array
       if (localState === null || localState === undefined) {

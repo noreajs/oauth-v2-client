@@ -10,12 +10,6 @@ type GetAuthorizationTokenFuncConfig<T = any> = TokenRequestType<T> & {
    * ```
    */
   callbackUrl: string;
-
-  /**
-   * The same redirect_uri used to generate the auth uri (getAuthUri).
-   * Leave it undefined when you don't use custom redirect_uri
-   */
-  redirectUri?: string;
   state?: string | string[];
 };
 
