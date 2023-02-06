@@ -26,11 +26,12 @@ export default class ImplicitGrantControl extends GrantControl {
     // create local properties
     const localState = options?.state;
     const localScopes = options?.scopes ?? this.options.scopes;
+    const localRedirectUrl = options?.callbackUrl ?? this.redirectUri;
 
     // query params
     const queryParams: any = {
       response_type: "token",
-      redirect_uri: this.redirectUri,
+      redirect_uri: localRedirectUrl,
       client_id: this.options.clientId,
       state: localState,
       scope: localScopes ? localScopes.join(" ") : "",

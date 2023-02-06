@@ -36,11 +36,12 @@ export default class AuthorizationCodeGrantControl
     // create local properties
     const localState = options?.state;
     const localScopes = options?.scopes ?? this.options.scopes;
+    const localRedirectUrl = options?.callbackUrl ?? this.redirectUri;
 
     // query params
     const queryParams: any = {
       response_type: options?.responseType ?? "code",
-      redirect_uri: this.redirectUri,
+      redirect_uri: localRedirectUrl,
       client_id: this.options.clientId,
       state: localState,
       scope: localScopes ? localScopes.join(" ") : "",
@@ -77,6 +78,7 @@ export default class AuthorizationCodeGrantControl
 
       // local state
       let localState = params.state;
+      const localRedirectUrl = params?.redirectUri ?? this.redirectUri;
 
       // force array
       if (localState === null || localState === undefined) {
@@ -104,7 +106,7 @@ export default class AuthorizationCodeGrantControl
         const requestBody: any = {
           grant_type: "authorization_code",
           code: urlData.query.code,
-          redirect_uri: this.redirectUri,
+          redirect_uri: localRedirectUrl,
           state: localState,
         };
 

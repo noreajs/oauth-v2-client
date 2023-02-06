@@ -45,11 +45,12 @@ export default class AuthorizationCodePKCEGrantControl
     const localCodeChallengeMethod = options?.codeChallengeMethod ?? this.options.codeChallengeMethod;
     const localCodeChallenge = localCodeVerifier ? generateCodeChallenge(localCodeVerifier) : undefined;
     const localScopes = options?.scopes ?? this.options.scopes;
+    const localRedirectUrl = options?.callbackUrl ?? this.redirectUri;
 
     // query params
     const queryParams: any = {
       response_type: options?.responseType ?? "code",
-      redirect_uri: this.redirectUri,
+      redirect_uri: localRedirectUrl,
       client_id: this.options.clientId,
       state: localState,
       scope: localScopes ? localScopes.join(" ") : "",
@@ -92,6 +93,7 @@ export default class AuthorizationCodePKCEGrantControl
       // create local state
       let localState = params.state;
       let localCodeVerifier = params.codeVerifier;
+      const localRedirectUrl = params?.redirectUri ?? this.redirectUri;
 
       // force array
       if (localState === null || localState === undefined) {
@@ -120,7 +122,7 @@ export default class AuthorizationCodePKCEGrantControl
           grant_type: "authorization_code",
           code: urlData.query.code,
           state: localState,
-          redirect_uri: this.redirectUri,
+          redirect_uri: localRedirectUrl,
           code_verifier: localCodeVerifier,
         };
 
