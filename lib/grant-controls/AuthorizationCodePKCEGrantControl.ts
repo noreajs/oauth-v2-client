@@ -90,12 +90,10 @@ export default class AuthorizationCodePKCEGrantControl
       // callback url data
       const urlData = parseUrl(params.callbackUrl);
 
-      const url = new URL(params.callbackUrl)
-
       // create local state
       let localState = params.state;
       let localCodeVerifier = params.codeVerifier;
-      const localRedirectUrl = `${url.origin}${url.pathname}`;
+      const localRedirectUrl = params?.redirectUri ?? this.redirectUri;
 
       // force array
       if (localState === null || localState === undefined) {

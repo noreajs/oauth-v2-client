@@ -80,7 +80,7 @@ export default class AuthorizationCodeGrantControl
 
       // local state
       let localState = params.state;
-      const localRedirectUrl = `${url.origin}${url.pathname}`;
+      const localRedirectUrl = params?.redirectUri ?? this.redirectUri;
 
       // force array
       if (localState === null || localState === undefined) {
