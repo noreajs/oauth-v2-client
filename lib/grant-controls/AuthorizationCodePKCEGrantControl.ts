@@ -43,7 +43,7 @@ export default class AuthorizationCodePKCEGrantControl
     const localState = options?.state;
     const localCodeVerifier = options?.codeVerifier;
     const localCodeChallengeMethod = options?.codeChallengeMethod ?? this.options.codeChallengeMethod;
-    const localCodeChallenge = localCodeVerifier ? generateCodeChallenge(localCodeVerifier) : undefined;
+    const localCodeChallenge = localCodeVerifier ? localCodeChallengeMethod === "S256" ? generateCodeChallenge(localCodeVerifier) : localCodeVerifier : undefined;
     const localScopes = options?.scopes ?? this.options.scopes;
     const localRedirectUrl = options?.callbackUrl ?? this.redirectUri;
 
