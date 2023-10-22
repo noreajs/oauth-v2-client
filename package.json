@@ -3,6 +3,9 @@
   "version": "1.2.2",
   "description": "Oauth V2 client based on axios",
   "main": "dist/index.js",
+  "engines": {
+    "node": "v18.x"
+  },
   "directories": {
     "lib": "dist"
   },
